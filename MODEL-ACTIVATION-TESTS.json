@@ -1,0 +1,11 @@
+{
+  "date": "2026-11-17",
+  "checks": [
+    "Choosing Carbon displays an unapplied draft and leaves the saved default unchanged",
+    "Use for this chat creates/selects the Carbon connection independently of app default and Auto",
+    "Reapplying the same connection reuses it without duplicates",
+    "Auto with no assignments explicitly says it uses the saved app default",
+    "Activation controls remain usable on phones without browser errors"
+  ],
+  "scope": "Real production UI against fixture API; no user configuration changed and no model calls."
+}

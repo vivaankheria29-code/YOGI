@@ -258,7 +258,7 @@ function messageNode(msg, seenImages, interactive = false) {
   shownMessages.add(msg);
   if (msg.role === 'board') li.classList.add('board');
   if (msg.role !== 'user') li.append(el('span', 'who', msg.role === 'error' ? 'Something went wrong' : msg.role === 'images' ? 'Pictures from Wikimedia Commons' : msg.role === 'generated' ? 'Image' : msg.role === 'board' ? 'Board' : 'YOGI'));
-  if(msg.role==='assistant'&&msg.engine)li.append(el('span','model-attribution',`${msg.engine.label} · ${msg.engine.model} · ${msg.engine.projectName}`));
+  if(msg.role==='assistant'&&msg.engine)li.append(el('span','model-attribution',`${msg.engine.label} · ${msg.engine.provider||'CLI'} · ${msg.engine.model} · ${msg.engine.projectName}`));
   if (msg.attachments?.length) li.append(attachmentRow(msg.attachments));
   const bubble = el('div', 'bubble');
   if (msg.role === 'assistant') renderRich(bubble, msg.text, {onImage: openPreview, seen: seenImages, hideBoards: true});

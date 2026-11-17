@@ -49,3 +49,7 @@ Local project data and credentials are excluded from Git and portable ZIPs. Movi
 ## Validation
 
 `node tools/test-shared-projects.mjs` verifies saved profiles, routing, storage, project isolation, session separation, bounds and folder access. `SHARED-CHAT-TESTS.json` records real HTTP/browser tests using a fixture Codex app-server and Claude subprocess: Codex changes a linked project file, Claude receives the file and handoff, then the reused Codex thread sees Claude’s review. These tests do not make paid requests or establish end-to-end compatibility with every live CLI/model/account.
+
+## Applying a model choice
+
+Selecting a CLI/model in the settings form edits a draft. **Use for this chat** saves/reuses that connection and selects it in the current chat. **Save app default** changes the default; it does not override an explicitly selected chat connection. If Auto has no assignments, the composer explicitly says it will use the saved app default. A suggested model does not install or authenticate its CLI.

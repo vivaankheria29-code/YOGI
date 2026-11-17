@@ -12,4 +12,6 @@
 .engine-actions button+button{background:var(--surface-3);color:var(--ink)}
 #engineFeedback{min-height:2.5em;overflow-wrap:anywhere}
 #engineFeedback[data-error=true]{color:var(--accent)}
+#engineSelectionState{padding:10px 12px;border:1px solid var(--line);border-radius:10px;overflow-wrap:anywhere}
+#engineSelectionState[data-dirty=true]{border-color:var(--accent-ink);color:var(--ink)}
 @media(max-width:650px){.engine-setting{flex-direction:column;gap:20px}.engine-form{width:100%}.engine-actions button{flex:1}.engine-intro{width:100%}}
