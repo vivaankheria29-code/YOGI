@@ -1,0 +1,28 @@
+{
+  "backend": {
+    "checks": [
+      "Playlist links are restricted to Spotify playlist URLs and URIs",
+      "PKCE login uses a loopback redirect and rejects invalid state",
+      "Authorization exchanges the matching verifier, consumes state once and exposes no tokens",
+      "Playlist paging validates offsets; restricted playback devices are excluded",
+      "Playback uses the selected playlist and device; invalid actions cannot reach Spotify",
+      "Concurrent requests refresh an expired session only once",
+      "Spotify denial is actionable and disconnect removes account access",
+      "Expired authorization attempts cannot create a session"
+    ]
+  },
+  "ui": {
+    "checks": [
+      "Music route opens with accurate disconnected state and setup redirect",
+      "Invalid playlist input shows an inline error and creates no iframe",
+      "A valid link loads only the official Spotify embed",
+      "Selected playlist restores on the Music page after reload",
+      "Missing app configuration produces actionable feedback",
+      "Linked playlists load and playback targets the chosen Spotify device",
+      "Music controls fit all three themes at phone, tablet and desktop sizes",
+      "Disconnect clears account controls; remove player unloads the audio iframe"
+    ],
+    "errors": []
+  },
+  "liveVerification": "No live account authentication or playback; simulated provider responses and browser iframe fixture."
+}

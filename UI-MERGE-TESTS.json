@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "Existing saved Core palette migrates into the new personalization controls",
+    "core: theme/face switch, separate light/dark palettes, slash catalog search, dock position",
+    "glass: theme/face switch, separate light/dark palettes, slash catalog search, dock position",
+    "marigold: theme/face switch, separate light/dark palettes, slash catalog search, dock position",
+    "Present mode opens and Escape restores the interface",
+    "All three looks fit phone and tablet widths with reduced motion",
+    "Local chess accepts a legal move, replies and undoes both moves"
+  ],
+  "errors": []
+}

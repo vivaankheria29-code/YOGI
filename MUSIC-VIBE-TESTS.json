@@ -1,0 +1,15 @@
+{
+  "checks": [
+    "No audio capture starts without the Vibe button",
+    "Shared synthetic audio produces actual detected beat pulses",
+    "Dot, orb and illustrated faces all render with beat input",
+    "Speaking keeps priority over music head offsets",
+    "Reduced motion suppresses the dance immediately",
+    "Silence releases beat pulse and energy instead of continuing a timed dance",
+    "Stop releases capture tracks and resets the face",
+    "A source without audio gives clear retry guidance",
+    "Cancelled browser permission leaves capture off",
+    "Vibe controls fit phone width"
+  ],
+  "errors": []
+}

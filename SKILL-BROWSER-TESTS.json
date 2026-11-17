@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Settings reports all 750 installed skills and loads the first 20 catalog entries",
+    "Catalog paging appends entries without duplicates",
+    "Task search returns relevant skills with exact pinned GitHub source links",
+    "Category filter shows the 178 frontend skills",
+    "All 250 animation additions are filterable and custom recipes are clearly labeled",
+    "Empty search results show useful feedback and hide paging",
+    "Skill browsing remains usable on a phone without horizontal overflow"
+  ]
+}

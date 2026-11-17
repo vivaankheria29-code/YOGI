@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "Active development turns can search an eight-item shortlist",
+    "One selected skill loads on demand",
+    "Other threads cannot use the active local tool",
+    "Traversal requests fail without exposing files"
+  ]
+}

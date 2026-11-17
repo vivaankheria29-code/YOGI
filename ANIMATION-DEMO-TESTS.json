@@ -1,0 +1,12 @@
+{
+  "syntaxValidated": 242,
+  "keyframeConfigsValidated": 242,
+  "componentFamiliesTested": 25,
+  "checks": [
+    "Each generated demo script parses",
+    "All 242 motion configurations are accepted by the browser",
+    "Representative families complete, replay, cancel, and honor reduced motion",
+    "No browser exceptions or lingering effects after cancellation"
+  ],
+  "note": "These probes validate the visual primitives, not the surrounding production component semantics."
+}

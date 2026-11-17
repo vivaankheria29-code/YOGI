@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "Dot-matrix arrow and red hover outline activate without intercepting input",
+    "Dot burst plays, preserves navigation, and cleans up",
+    "Text controls retain the native cursor and normal typing",
+    "Cursor preference can be disabled and persists across reload",
+    "Both app and operating-system reduced motion restore native behavior",
+    "Modal dialogs retain a visible native cursor",
+    "Cursor hides when the page loses focus",
+    "Rapid click bursts stay bounded and fully clean up",
+    "Touch interaction remains native"
+  ]
+}

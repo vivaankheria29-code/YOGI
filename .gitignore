@@ -1,0 +1,13 @@
+# Local credentials and runtime state
+.env
+.env.*
+!.env.example
+workspace/
+data/
+work/
+.runtime/
+node_modules/
+*.log
+*.zip
+.DS_Store
+Thumbs.db

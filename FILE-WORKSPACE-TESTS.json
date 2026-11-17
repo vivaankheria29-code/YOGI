@@ -1,0 +1,39 @@
+{
+  "backend": {
+    "checks": [
+      "Text saves update the selected artifact; stale versions cannot overwrite external changes",
+      "Attachments save as independent copies and conversation scoping remains enforced",
+      "UTF-16 BOM, Unicode and existing newlines are preserved",
+      "Binary editing preserves exact bytes and rejects malformed hex",
+      "Office containers provide bounded read-only XML content without executing it",
+      "Paths cannot escape the artifact folder; native code opens as text and uploaded originals are copied",
+      "Busy replies and oversized files cannot be silently overwritten or truncated",
+      "Media byte ranges stream the requested bytes and reject out-of-bounds ranges"
+    ]
+  },
+  "ui": {
+    "checks": [
+      "Opening a file creates a real side-by-side chat/editor layout",
+      "Unsaved text survives hiding and reopening the workspace",
+      "Saving creates a working copy without losing text or leaving controls disabled",
+      "Sending and receiving chat works while the editor remains open",
+      "Created-file links open in workspace tabs instead of navigating away",
+      "An external change blocks stale saves and preserves the user\u00e2\u20ac\u2122s draft",
+      "Ask YOGI inserts the correct working path; desktop opening uses the scoped backend",
+      "Unknown binary files can be inspected and edited as exact hex bytes",
+      "CSV previews parse quoted cells without corrupting the editable source",
+      "Office files provide a content overview and native-app handoff",
+      "The split divider works from the keyboard",
+      "The workspace adapts to phone and tablet widths without horizontal page overflow",
+      "The workspace remains usable in Glass and Marigold as well as Core"
+    ],
+    "errors": []
+  },
+  "review": {
+    "errors": 0,
+    "warnings": 0,
+    "suggestions": 1
+  },
+  "appRegressionGroups": 14,
+  "nativeOpenerTest": "Stubbed; no real desktop documents opened by automated tests."
+}

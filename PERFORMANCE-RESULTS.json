@@ -1,0 +1,81 @@
+{
+  "baseline": [
+    {
+      "messages": 0,
+      "readyMs": 389.46079999999995,
+      "mainThreadMs": 304.9890000000001,
+      "faceDraws": 174,
+      "activityChecks": 174,
+      "nodes": 862
+    },
+    {
+      "messages": 300,
+      "readyMs": 507.9834000000001,
+      "mainThreadMs": 432.11699999999996,
+      "faceDraws": 173,
+      "activityChecks": 173,
+      "nodes": 4162
+    }
+  ],
+  "optimized": [
+    {
+      "messages": 0,
+      "readyMs": 381.3882,
+      "mainThreadMs": 144.736,
+      "faceDraws": 72,
+      "activityChecks": 29,
+      "nodes": 862
+    },
+    {
+      "messages": 300,
+      "readyMs": 470.6773999999996,
+      "mainThreadMs": 249.1079999999999,
+      "faceDraws": 72,
+      "activityChecks": 29,
+      "nodes": 4162
+    }
+  ],
+  "catalogBefore": {
+    "iterations": 100,
+    "ms": 687.9032000000001
+  },
+  "catalogAfter": {
+    "iterations": 100,
+    "ms": 23.324800000000003
+  },
+  "assets": {
+    "rawBytes": 620516,
+    "gzipBytes": 200290,
+    "files": 39
+  },
+  "cacheChecks": {
+    "checks": [
+      "Compressed static assets preserve content while reducing transfer size",
+      "ETag revalidation returns an empty 304 and gzip opt-out is honored",
+      "Changed assets invalidate the cache; paths outside public remain blocked",
+      "The catalog cache is immutable and edited catalogs are revalidated"
+    ],
+    "plainBytes": 5600,
+    "gzipBytes": 83
+  },
+  "renderingChecks": {
+    "checks": [
+      "Matrix allocation reduction matches the prior renderer across four expressions",
+      "Idle face uses a bounded frame budget",
+      "Hidden pages stop face draws",
+      "High-level chess computes in a worker while UI timers continue"
+    ],
+    "pixel": {
+      "large": 0,
+      "total": 2073600,
+      "maxDifference": 0
+    },
+    "idleFrames": 24,
+    "worker": {
+      "move": "Nc3",
+      "ticks": 113,
+      "ms": 1132.5
+    }
+  },
+  "limitations": "Single-machine measurements over 3-second idle samples in a headless Chrome fixture. Startup timing is noisy. No live external model, Spotify account, microphone hardware or provider-latency benchmarks."
+}

@@ -1,0 +1,11 @@
+{
+  "poses": 12,
+  "checks": [
+    "All Settings previews render",
+    "Preview restores automatic face",
+    "390px and 1440px no horizontal overflow",
+    "Live audio controls mouth while wink remains",
+    "Reduced motion is static and restores",
+    "No runtime exceptions"
+  ]
+}

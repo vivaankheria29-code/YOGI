@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-ui="core">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#000000">
+<title>YOGI — Core</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/doto-900.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/grotesk-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/ui-glass.css">
+<link rel="stylesheet" href="/ui-marigold.css">
+<link rel="stylesheet" href="/spotify.css">
+<link rel="stylesheet" href="/file-workspace.css">
+<script>
+// Apply the saved look before the first paint, so there is no flash of the wrong interface.
+try{const p=JSON.parse(localStorage.getItem('gigga.preferences')||'{}');const ui=['core','glass','marigold'].includes(p.ui)?p.ui:'core';document.documentElement.dataset.ui=ui;document.documentElement.dataset.theme=p.theme==='light'?'light':'dark';}catch{}
+</script>
+</head>
+<body data-view="core" data-activity="idle" data-face="dots">
+<div class="ambient" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<div id="saveWarning" class="save-warning" role="alert" hidden><span id="saveWarningText">Changes are not saved.</span><button id="retrySave" type="button">Retry saving</button><button type="button" onclick="document.getElementById('exportData').click()">Export backup</button></div>
+
+<a class="skip-link" href="#prompt">Skip to message box</a>
+
+<header class="topbar">
+  <div class="brand">
+    <h1 class="wordmark" translate="no"><i class="brand-light" aria-hidden="true"></i>YOGI<span class="wordmark-core">&nbsp;CORE</span></h1>
+    <span class="byline">by Vivaan Kheria</span>
+  </div>
+  <nav class="tabs" aria-label="Sections">
+    <button class="tab" data-view="core" aria-current="page">Core</button><button class="tab" data-view="chat">Conversation</button>
+    <button class="tab" data-view="history">History <span class="count" id="historyCount">0</span></button>
+    <button class="tab" data-view="tasks">Tasks <span class="count" id="taskCount">0</span></button>
+    <button class="tab" data-view="apps">Plugins <span class="count" id="pluginCount">…</span></button>
+    <button class="tab" data-view="music">Music</button>
+    <button class="tab" data-view="settings">Settings</button>
+  </nav>
+  <div class="calendar-widget" role="group" aria-label="Date and time in India">
+    <div class="calendar-date"><span id="weekday">—</span><time id="date">—</time></div>
+    <time id="clock" aria-label="Current time in India">--:--</time>
+  </div>
+  <div class="top-actions"><span id="systemState" class="system-state" role="status">SYS // IDLE</span>
+
+    <button class="ghost present-btn" id="presentToggle" aria-pressed="false" title="Present: enlarge the face (P). Esc to exit."><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="presentLabel">Present</span></button>
+  </div>
+</header>
+
+<div class="shell">
+  <!-- Stage: YOGI's face, what she is doing right now, and what she is saying. -->
+  <section class="stage" id="stage" aria-label="YOGI">
+    <div class="face-wrap">
+      <button class="face-button" id="faceButton" aria-label="Talk to YOGI" title="Click or press Space to talk">
+        <canvas id="dotFace" class="dot-face" aria-hidden="true"></canvas>
+        <canvas id="orbFace" class="orb-face" aria-hidden="true"></canvas>
+        <svg id="face" class="face" viewBox="0 0 400 420" role="img" aria-labelledby="faceTitle">
+          <title id="faceTitle">YOGI's face</title>
+          <defs>
+            <clipPath id="mouthClip"><path id="mouthClipPath" d=""/></clipPath>
+          </defs>
+          <!-- Sound rings: listening ripples and voice warm-up bars sit behind the head. -->
+          <g id="rings" class="rings" aria-hidden="true">
+            <circle class="ring" cx="200" cy="228" r="182"/>
+            <circle class="ring" cx="200" cy="228" r="182"/>
+            <circle class="ring" cx="200" cy="228" r="182"/>
+          </g>
+          <g id="tuner" class="tuner" aria-hidden="true"></g>
+          <g id="thoughts" class="thoughts" aria-hidden="true">
+            <circle cx="336" cy="84" r="9"/>
+            <circle cx="358" cy="52" r="13"/>
+            <circle cx="378" cy="14" r="17"/>
+          </g>
+          <g id="head" class="head">
+            <!-- Bob haircut behind the face -->
+            <path class="hair" d="M200 58 C322 58 376 136 372 236 C370 296 362 340 346 372 C330 384 304 382 292 368 L108 368 C96 382 70 384 54 372 C38 340 30 296 28 236 C24 136 78 58 200 58 Z"/>
+            <path id="headShape" class="head-shape" d="M200 96 C290 96 332 150 332 232 C332 318 286 370 200 370 C114 370 68 318 68 232 C68 150 110 96 200 96 Z"/>
+            <!-- Side-swept fringe -->
+            <path class="hair" d="M62 236 C52 138 112 72 204 72 C292 72 348 128 340 214 C330 170 312 146 286 134 C270 150 244 158 212 155 C186 151 166 141 150 126 C116 144 82 184 62 230 Z"/>
+            <g class="clip"><rect x="262" y="118" width="40" height="15" rx="7.5" transform="rotate(-24 282 125)" class="clip-band"/><circle id="antennaDot" cx="282" cy="125" r="8"/></g>
+            <ellipse id="cheekL" class="cheek" cx="118" cy="268" rx="26" ry="15"/>
+            <ellipse id="cheekR" class="cheek" cx="282" cy="268" rx="26" ry="15"/>
+            <g id="browL" class="brow"><path d="M124 176 Q148 164 172 172" fill="none" stroke-width="8" stroke-linecap="round"/></g>
+            <g id="browR" class="brow"><path d="M228 172 Q252 164 276 176" fill="none" stroke-width="8" stroke-linecap="round"/></g>
+            <g id="eyeL" class="eye">
+              <ellipse class="eye-ball" cx="148" cy="214" rx="21" ry="29"/>
+              <circle class="eye-glint" cx="156" cy="202" r="7"/>
+              <circle class="eye-glint small" cx="141" cy="226" r="3"/>
+              <path class="lash" d="M129 198 L118 189 M133 192 L126 181" />
+            </g>
+            <g id="eyeR" class="eye">
+              <ellipse class="eye-ball" cx="252" cy="214" rx="21" ry="29"/>
+              <circle class="eye-glint" cx="260" cy="202" r="7"/>
+              <circle class="eye-glint small" cx="245" cy="226" r="3"/>
+              <path class="lash" d="M271 198 L282 189 M267 192 L274 181" />
+            </g>
+            <g id="fxStars" class="fx fx-stars" opacity="0"><path d="M148.0 184.0 L155.1 204.3 L176.5 204.7 L159.4 217.7 L165.6 238.3 L148.0 226.0 L130.4 238.3 L136.6 217.7 L119.5 204.7 L140.9 204.3 Z"/><path d="M252.0 184.0 L259.1 204.3 L280.5 204.7 L263.4 217.7 L269.6 238.3 L252.0 226.0 L234.4 238.3 L240.6 217.7 L223.5 204.7 L244.9 204.3 Z"/></g>
+            <g id="fxX" class="fx fx-x" opacity="0"><path d="M131 197 L165 231 M165 197 L131 231 M235 197 L269 231 M269 197 L235 231"/></g>
+            <g id="fxShades" class="fx fx-shades" opacity="0"><path class="bridge" d="M176 206 Q200 196 224 206"/><rect x="112" y="190" width="72" height="48" rx="22"/><rect x="216" y="190" width="72" height="48" rx="22"/><path class="glint" d="M126 204 L142 197 M230 204 L246 197"/></g>
+            <path id="fxTear" class="fx fx-tear" opacity="0" d="M150 238 Q164 262 150 272 Q136 262 150 238 Z"/>
+            <g id="mouth" class="mouth">
+              <path id="mouthShape" class="mouth-shape" d=""/>
+              <g clip-path="url(#mouthClip)">
+                <rect id="teeth" class="teeth" x="150" y="0" width="100" height="14" rx="4"/>
+                <ellipse id="tongue" class="tongue" cx="200" cy="330" rx="26" ry="16"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </button>
+    </div>
+    <div class="core-connect">    <span class="conn" id="connState" role="status"><i aria-hidden="true"></i><span id="connText">Connecting…</span></span></div>
+    <div class="stage-copy">
+      <p class="state-line" id="stateLine" aria-live="polite">Hi, I'm YOGI</p>
+      <p class="state-sub" id="stateSub">Press Space or tap my face to talk.</p>
+      <p class="core-greeting" id="coreGreeting">At your service.</p>
+      <div class="caption" id="caption" aria-hidden="true" hidden></div>
+    </div>
+    <div class="stage-controls">
+      <button class="mic-big" id="mic" aria-label="Start talking" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke-width="2" stroke-linecap="round"/></svg>
+        <span id="micLabel">Talk</span>
+      </button>
+      <button class="voice-toggle" id="speakToggle" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke-width="2" stroke-linecap="round"/></svg>
+        <span id="speakLabel">Voice off</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Work area: one panel at a time. -->
+  <main class="work" id="main">
+    <section id="approvalPanel" class="approvals" aria-live="polite" hidden></section>
+
+    <section class="panel chat-panel" id="chatPanel" aria-labelledby="chatTitle">
+      <div class="panel-head">
+        <h2 id="chatTitle" class="chat-title">New conversation</h2>
+        <button class="ghost" id="newChat">New chat</button>
+      </div>
+      <div class="thread" id="thread" tabindex="-1">
+        <div class="welcome" id="welcome">
+          <p class="welcome-hello" id="greeting">Hello.</p>
+          <p class="welcome-sub">Ask me anything, drop in a file, or press Space and just talk.</p>
+          <div class="suggestions" aria-label="Suggestions">
+            <button data-prompt="Who are you, and who created you?">Who are you, and who made you?</button>
+            <button data-prompt="Help me plan my day around my open tasks. Keep it practical.">Plan my day around my tasks</button>
+            <button data-prompt="Explain how a rainbow forms, like I'm twelve.">Explain rainbows like I'm twelve</button>
+            <button data-prompt="Help me brainstorm a project worth building. Start by asking me one useful question.">Brainstorm a project with me</button>
+          </div>
+        </div>
+        <ol class="messages" id="messages" aria-live="polite" aria-relevant="additions"></ol>
+      </div>
+
+      <form class="composer" id="chatForm">
+        <div class="tray" id="tray" hidden aria-label="Attached files"></div>
+        <label class="sr-only" for="prompt">Message YOGI</label>
+        <textarea id="prompt" rows="1" maxlength="10000" placeholder="Message YOGI · type / for skills · Space to talk"></textarea>
+        <div class="composer-row">
+          <button type="button" class="icon-btn" id="attach" aria-label="Attach files" title="Attach files">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.9-8.9a3.7 3.7 0 0 1 5.2 5.2l-8.9 8.9a1.8 1.8 0 0 1-2.6-2.6l8.2-8.2" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <input id="fileInput" type="file" multiple hidden>
+          <label class="sr-only" for="workMode">Mode</label>
+          <select id="workMode" class="chip-select" title="Working mode">
+            <option>General</option><option>Build</option><option>Research</option><option>Create</option><option>Plan</option>
+          </select>
+          <button type="button" class="chip" id="webToggle" aria-pressed="true">Web</button>
+          <button type="button" class="chip" id="imageToggle" aria-pressed="false">Images</button>
+          <button type="button" class="chip mic-chip" id="wakeChip" aria-pressed="false" title="Say “Hey Yogi” to talk hands-free">Hey Yogi</button>
+          <span class="composer-status" id="composerStatus" role="status"></span>
+          <button type="button" class="icon-btn" id="micInline" aria-label="Dictate" title="Dictate (Space)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+          <button type="button" class="stop-btn" id="stopResponse" hidden>Stop</button>
+          <button id="enableAudio" type="button" hidden>Enable audio</button><button type="submit" class="send-btn" id="send" aria-label="Send message">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </form>
+      <p class="composer-hint">Enter to send · Shift + Enter for a new line · Space to talk when you are not typing</p>
+    </section>
+
+    <section class="panel" id="historyPanel" aria-labelledby="historyTitle" hidden>
+      <div class="panel-head"><h2 id="historyTitle">Conversations</h2><button class="ghost" id="newChat2">New chat</button></div>
+      <p class="panel-note" id="historySummary">Saved in this browser.</p>
+      <ul class="history" id="chatHistory"></ul>
+      <div class="restored-project" hidden><p><b>Restored from your backup.</b> Five conversations, ten uploaded files and the Flappy Modi project.</p><a href="/projects/flappy-modi/" target="_blank" rel="noopener">Open the restored game</a></div>
+    </section>
+
+    <section class="panel" id="tasksPanel" aria-labelledby="tasksTitle" hidden>
+      <div class="panel-head"><h2 id="tasksTitle">Today's tasks</h2><span class="panel-note" id="taskProgress">0 of 0 done</span></div>
+      <form id="taskForm" class="task-form"><label class="sr-only" for="taskInput">New task</label><input id="taskInput" placeholder="Add something to focus on" maxlength="200"><button>Add</button></form>
+      <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+      <ul class="tasks" id="taskList"></ul>
+      <p class="empty" id="emptyTasks">Nothing here yet. Add a task and I'll keep it in mind when you ask me to plan.</p>
+    </section>
+
+    <section class="panel" id="appsPanel" aria-labelledby="appsTitle" hidden>
+      <div class="panel-head"><h2 id="appsTitle">Connected apps</h2><button class="ghost" id="refreshPlugins">Refresh</button></div>
+      <p class="panel-note" id="pluginSummary">Checking your connections…</p>
+      <label class="sr-only" for="pluginSearch">Search plugins</label><input id="pluginSearch" class="plugin-search" type="search" placeholder="Search plugins" autocomplete="off">
+      <div id="pluginGrid" class="plugin-grid"></div>
+      <details class="local-plugins"><summary>Installed skill bundles</summary><p class="panel-note">These add document, browser, media and development workflows. Some need extra setup when used.</p><div id="localPluginList"></div></details>
+    </section>
+
+    <section class="panel music-panel" id="musicPanel" aria-labelledby="musicTitle" hidden>
+      <div class="panel-head"><h2 id="musicTitle">Your soundtrack.</h2><span class="spotify-brand">Spotify</span></div>
+      <p class="panel-note">A little music, in your own space.</p>
+      <div class="music-card">
+        <div class="music-intro"><div class="music-record" aria-hidden="true"><span></span></div><div><p class="music-eyebrow">MADE FOR YOUR MOMENT</p><h3 id="musicPlaylistTitle">Bring your playlist.</h3><p id="spotifyStatus" role="status">Paste a Spotify playlist link, or connect your account.</p></div></div>
+        <form id="spotifyLinkForm" class="music-link-form"><label for="spotifyPlaylistLink">Playlist link</label><div><input id="spotifyPlaylistLink" type="text" maxlength="500" placeholder="https://open.spotify.com/playlist/…" autocomplete="off" required><button type="submit">Load playlist</button></div><p class="field-note" id="spotifyLinkError" role="alert"></p></form>
+        <div id="spotifyPlayer" class="music-player" hidden></div>
+        <div class="music-links"><a id="spotifyOpen" href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer">Open Spotify ↗</a><button id="spotifyClear" class="ghost" type="button" hidden>Remove player</button></div>
+        <p class="field-note">Use the embedded player’s play button. Spotify controls playback availability and may require sign-in.</p>
+      </div>
+      <div class="music-vibe-card">
+        <div><h3>Let the face feel it.</h3><p>A blend of smiles, winks, playful brows, heart eyes and cool looks, changing with the beat and energy.</p></div>
+        <button id="musicVibe" type="button" aria-pressed="false" aria-describedby="musicVibeHelp">Vibe with music</button>
+        <label for="musicVibeStrength">Movement <input id="musicVibeStrength" type="range" min="20" max="100" value="70"></label>
+        <p id="musicVibeStatus" role="status">Music vibe is off.</p>
+        <p id="musicVibeHelp" class="field-note">Choose the tab playing music and enable Share tab audio. For Spotify desktop, use a screen source with system audio if your browser supports it. Audio stays on this computer; YOGI does not record it or read the shared video. Phone playback cannot drive the face. You can stop sharing anytime.</p>
+      </div>
+      <details class="music-connect" id="spotifySetup"><summary>Link your Spotify account</summary>
+        <p>Browse your playlists here and control playback on an active Spotify device. Your account stays linked until YOGI’s server restarts or you disconnect.</p>
+        <label for="spotifyClientId">Spotify app Client ID</label><input id="spotifyClientId" maxlength="32" autocomplete="off" spellcheck="false" placeholder="32-character Client ID">
+        <p class="field-note">In your <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer">Spotify developer app</a>, add this exact redirect URI:</p><code id="spotifyRedirect"></code>
+        <p class="field-note">No Client Secret needed. Spotify developer access restrictions apply; device playback requires Premium. In development mode, add your account as an allowed user.</p>
+        <div class="music-actions"><button id="spotifyConnect" type="button">Connect Spotify</button><button id="spotifyDisconnect" class="ghost" type="button" hidden>Disconnect</button></div>
+      </details>
+      <div id="spotifyLibrary" hidden><div class="music-library-head"><h3>Your playlists</h3><button id="spotifyRefresh" class="ghost" type="button">Refresh</button></div><div id="spotifyPlaylists" class="music-playlists"></div><button id="spotifyMore" class="ghost" type="button" hidden>More playlists</button>
+        <div class="music-device"><label for="spotifyDevice">Play on</label><select id="spotifyDevice"><option value="">Active Spotify device</option></select><button id="spotifyDevices" class="ghost" type="button">Refresh devices</button></div>
+        <div class="music-actions music-transport" role="group" aria-label="Spotify device playback"><button type="button" data-spotify-action="previous">Previous</button><button type="button" data-spotify-action="play">Play on device</button><button type="button" data-spotify-action="pause">Pause</button><button type="button" data-spotify-action="next">Next</button></div>
+        <p class="field-note">Device controls operate the Spotify app, separately from the embedded player. Open Spotify and play a song there if no devices appear.</p>
+      </div>
+      <p id="spotifyFeedback" class="field-note" role="status"></p>
+    </section>
+
+    <section class="panel" id="settingsPanel" aria-labelledby="settingsTitle" hidden>
+      <div class="panel-head"><h2 id="settingsTitle">Settings</h2></div>
+      <div class="setting"><div><h3>Engine</h3><p id="settingsStatus">Checking…</p></div><button id="reconnectEngine" type="button">Reconnect</button></div>
+      <div class="setting" id="accessSetting">
+        <div><h3>Permissions</h3><p id="accessModeStatus" role="status">Full access · local approval prompts are off.</p><p class="field-note" id="accessModeHelp">Full access allows local file reads and writes, commands and network access using your Windows account. It applies to YOGI’s engine; browser microphone/screen sharing, service sign-ins and email-send confirmations still apply.</p></div>
+        <div class="setting-actions"><label class="field-label" for="accessMode">YOGI access</label><select id="accessMode" aria-describedby="accessModeHelp"><option value="full">Full access · no local prompts</option><option value="workspace">Workspace · ask for extra access</option></select></div>
+      </div>
+      <div class="setting">
+        <div>
+          <h3>Voice</h3>
+          <p id="voiceStatus">Checking the voice setup…</p>
+          <label class="field-label" for="voiceEngine">Voice engine</label>
+          <select id="voiceEngine"><option value="auto">Automatic (ElevenLabs when a key is saved)</option><option value="elevenlabs">ElevenLabs</option><option value="browser">Built-in browser voice (works offline)</option></select>
+          <label class="field-label" for="elevenLabsApiKey">ElevenLabs API key</label>
+          <div class="inline-field"><input id="elevenLabsApiKey" type="password" autocomplete="new-password" placeholder="Paste your API key" maxlength="256" aria-describedby="keyNote"><button id="saveElevenLabsKey" type="button">Save key</button></div>
+          <p class="field-note" id="keyNote">Saved on this computer in the app's local .env file. It never comes back to this page.</p>
+        </div>
+        <div class="setting-actions"><button id="testVoice">Test voice</button></div>
+      </div>
+      <div class="setting">
+        <div><h3>Appearance</h3><p>Pick one of three interfaces: Core, the original; Glass, translucent and Apple-like; or Marigold, warm and bold. Light works better on bright projectors.</p></div>
+        <div class="setting-actions">
+          <label class="field-label" for="uiChoice">Interface</label>
+          <select id="uiChoice"><option value="core">Core (original)</option><option value="glass">Glass (Apple style)</option><option value="marigold">Marigold</option></select>
+          <label class="field-label" for="themePreference">Theme</label>
+          <select id="themePreference"><option value="dark">Dark</option><option value="light">Light</option></select>
+          <label class="field-label" for="faceStyle">Face</label>
+          <select id="faceStyle"><option value="auto">Match the interface</option><option value="dots">Dot matrix</option><option value="orb">Smooth orb</option><option value="illustrated">Illustrated</option></select>
+          <label class="field-label" for="expressionChoice">Expression</label>
+          <select id="expressionChoice" aria-describedby="expressionHint"></select>
+          <button id="previewExpression" type="button">Preview for 3 seconds</button>
+          <p id="expressionHint" class="field-note">The face follows live activity: reading, searching, reasoning, creating, speaking, and results. Preview any look for a few seconds.</p>
+          <label class="check"><input id="cursorPreference" type="checkbox" checked> Animated cursor &amp; click effects</label>
+          <label class="check"><input id="motionPreference" type="checkbox"> Reduce motion</label>
+        </div>
+      </div>
+      <div class="setting personalise">
+        <div class="personalise-body"><h3>Personalise</h3><p>Colours and background for the <b id="lookUiName">Core</b> interface. Each interface and light/dark mode remembers its own look.</p>
+          <label class="field-label" for="cursorStyle">Cursor (all interfaces)</label>
+          <select id="cursorStyle"></select>
+          <span class="field-label">Accent colour</span><div class="swatches" data-look="accent" role="group" aria-label="Accent colour"></div>
+          <span class="field-label">Text colour</span><div class="swatches" data-look="ink" role="group" aria-label="Text colour"></div>
+          <span class="field-label">Your chat bubbles</span><div class="swatches" data-look="bubble" role="group" aria-label="Chat bubble colour"></div>
+          <span class="field-label">Panels</span><div class="swatches" data-look="panel" role="group" aria-label="Panel colour"></div><span class="field-label">Face dots</span><div class="swatches" data-look="face" role="group" aria-label="Face dots colour"></div><span class="field-label">Background</span><div class="bg-tiles" id="bgTiles" role="group" aria-label="Background"></div>
+          <input id="bgFile" type="file" accept="image/*" hidden>
+          <label class="range-row" id="bgDimRow" hidden>Dim the photo <input id="bgDim" type="range" min="0" max="80" step="5"></label>
+          <div class="form-actions"><button id="resetLook" type="button">Reset this interface</button></div>
+        </div>
+      </div>
+      <div class="setting">
+        <div><h3>Microphone</h3><p id="dictationStatus" role="status">Press Space or tap the microphone to talk. Press again to send.</p><p class="field-note" id="dictationHint">Speech appears as you talk. Press the microphone again to send confirmed words. Space works outside text fields. For voice activation, enable Hey Yogi below.</p></div>
+      </div>
+      <div class="setting">
+        <div><h3>Hey Yogi</h3><p id="wakeStatus" role="status">Wake word is off.</p><p id="wakeHeard" class="field-note" aria-live="off"></p><p class="field-note">Enable once, then say “Hey Yogi” followed by your question. A short tone acknowledges you; a pause sends your question. You can interrupt a reply. YOGI remembers this setting and reconnects automatically while the page stays open. Use Chrome; browser or OS suspension can stop background listening. Speech recognition may send audio to an online service. Disable here anytime.</p></div>
+        <div class="setting-actions"><button id="wakeToggle" type="button" aria-pressed="false" aria-describedby="wakeStatus">Enable wake word</button>
+          <label class="field-label" for="wakeSensitivity">Sensitivity</label>
+          <select id="wakeSensitivity"><option value="strict">Strict: exact “Hey Yogi”</option><option value="balanced">Balanced (recommended)</option><option value="sensitive">Sensitive: also just “Yogi, …”</option></select></div>
+      </div>
+      <div class="setting skill-library-setting"><div>
+        <h3>Development skill library</h3>
+        <p id="skillLibraryStatus" role="status">5,750 skills: 508 GitHub skills and 5,242 custom YOGI recipes. New video and 3D recipes load on demand.</p>
+        <p class="field-note">Includes pinned GitHub snapshots and custom YOGI recipes; the new video and 3D recipes are stored separately and read on demand. YOGI automatically matches each development request and loads relevant skills. You do not need to name or request them. Startup does not run skill scripts or install their external dependencies.</p>
+        <form id="skillSearch" class="skill-search" role="search" aria-label="Development skills">
+          <label for="skillQuery">Find a skill</label><input id="skillQuery" type="search" maxlength="200" placeholder="React, PostgreSQL, testing…">
+          <label for="skillCategory">Category</label><select id="skillCategory"><option value="">All skills</option><option value="frontend">Frontend</option><option value="backend">Backend/development</option><option value="animation">Animation</option><option value="video-animation">Video animation</option><option value="web-3d">3D websites</option></select>
+          <button type="submit">Search skills</button>
+        </form>
+        <p id="skillResultCount" class="field-note" role="status"></p><div id="skillResults" class="skill-results"></div><button id="moreSkills" type="button" hidden>Show more skills</button>
+      </div></div>
+      <div class="setting"><div><h3>Saved files</h3><p id="fileStorageStatus">Checking storage…</p><button id="refreshSavedFiles" type="button">Refresh files</button><div id="savedFiles"></div></div></div>
+      <div class="setting"><div><h3>Your data</h3><p>Full conversations and tasks are saved in this browser’s database. Export a backup before clearing browser data.</p></div><div class="setting-actions"><button id="exportData">Export as JSON</button><button id="changeName">Change my name</button></div></div>
+    </section>
+  </main>
+</div>
+
+<!-- Present mode caption bar shows what YOGI is saying in large type. -->
+<div class="drop-overlay" id="dropOverlay" hidden><p>Drop files to attach them</p></div>
+
+<dialog class="preview" id="previewDialog" aria-labelledby="previewTitle">
+  <div class="preview-head"><div><h2 id="previewTitle">Preview</h2><p id="previewMeta"></p></div><button class="icon-btn" id="previewClose" aria-label="Close preview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <div class="preview-body" id="previewBody"></div>
+</dialog>
+
+<dialog class="name-gate" id="nameGate" aria-labelledby="nameGateTitle">
+  <form id="nameGateForm" method="dialog" autocomplete="off">
+    <h2 id="nameGateTitle">Hi, I'm YOGI. What should I call you?</h2>
+    <label class="sr-only" for="nameGateInput">Your name</label>
+    <input id="nameGateInput" type="text" maxlength="40" placeholder="Your name" spellcheck="false">
+    <button type="submit" id="nameGateSave">Continue</button>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="/vendor/gsap.min.js"></script>
+<script src="/vendor/ScrambleTextPlugin.min.js"></script>
+<script src="/vendor/SplitText.min.js"></script>
+<script>if(window.gsap){try{gsap.registerPlugin(ScrambleTextPlugin,SplitText);}catch{}}</script>
+<script type="module" src="/app.js"></script>
+<script type="module" src="/calendar.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-16",
+  "checks": [
+    "Original 750 manifest entries unchanged",
+    "5000 uniquely identified custom recipes with transparent provenance",
+    "5750 ready; new recipes isolated from native discovery",
+    "Every new recipe reachable through paginated category search",
+    "Automatic video/3D routing, context limits and opt-out",
+    "Repeated routing reuses immutable index",
+    "Fresh on-demand install, read, missing-file repair and modified-content preservation",
+    "Tampered bundle and unlisted traversal rejected"
+  ],
+  "state": {
+    "version": "2026-11-16-788b8d8615c1",
+    "total": 5750,
+    "installed": 5750,
+    "newlyInstalled": 0,
+    "cached": 5750,
+    "conflicts": [],
+    "categories": {
+      "frontend": 178,
+      "backend": 322,
+      "animation": 250,
+      "video-animation": 3000,
+      "web-3d": 2000
+    }
+  },
+  "routingMeanMs": 5.815455000000293,
+  "formatValidation": {
+    "checked": 5000,
+    "failures": 0
+  },
+  "browserChecks": [
+    "Settings reports all 5750 installed skills and loads the first 20 catalog entries",
+    "Catalog paging appends entries without duplicates",
+    "Task search returns relevant skills with exact pinned GitHub source links",
+    "Category filter shows the 178 frontend skills",
+    "2000 web 3D recipes filter correctly and custom provenance is visible",
+    "3000 video recipes filter correctly",
+    "Empty search results show useful feedback and hide paging",
+    "Skill browsing remains usable on a phone without horizontal overflow"
+  ],
+  "existingAutomaticRoutingChecks": 9
+}

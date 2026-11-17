@@ -1,0 +1,161 @@
+/* =====================================================================
+   GLASS — YOGI in Apple's language.
+   Content sits on a quiet wallpaper; controls float above it as translucent
+   material (Liquid Glass): the top bar, the tab capsule and the chat bar.
+   System type, system blue, iMessage-style bubbles, a lens pointer, springs.
+   ===================================================================== */
+:root[data-ui=glass]{
+  --ground:#0B0B10;--surface:rgba(30,30,36,.58);--surface-2:rgba(255,255,255,.07);--surface-3:rgba(255,255,255,.13);--line:rgba(255,255,255,.12);
+  --solid:#1C1C22;--ink:#F5F5F7;--ink-2:rgba(235,235,245,.78);--ink-3:rgba(235,235,245,.6);
+  --accent:#0A84FF;--on-accent:#fff;--accent-ink:#64B5FF;--focus:#0A84FF;
+  --core-red:#0A84FF;--core-red-hover:#0071E3;--core-red-ink:#7CC0FF;--core-red-soft:rgba(10,132,255,.18);--core-red-line:rgba(10,132,255,.45);
+  --red:#FF453A;--live:#30D158;--danger:#FF6961;
+  --dot-off:#26262E;--dot-on:#F5F5F7;--dot-red:#0A84FF;--dot-grid:transparent;
+  --user-bubble:#0A84FF;
+  --glass-bg:rgba(36,36,44,.52);--glass-edge:rgba(255,255,255,.22);--glass-shadow:0 18px 50px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.25);
+  --glass-hi:rgba(255,255,255,.10);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
+  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --radius:22px;--radius-sm:16px;
+  --spring:cubic-bezier(.2,.9,.25,1);
+}
+:root[data-ui=glass][data-theme=light]{
+  --ground:#EEF0F5;--surface:rgba(255,255,255,.62);--surface-2:rgba(0,0,0,.045);--surface-3:rgba(0,0,0,.08);--line:rgba(0,0,0,.09);
+  --solid:#FFFFFF;--ink:#1D1D1F;--ink-2:rgba(29,29,31,.82);--ink-3:rgba(60,60,67,.78);
+  --accent:#007AFF;--accent-ink:#0062CC;--focus:#007AFF;
+  --core-red:#007AFF;--core-red-hover:#0062CC;--core-red-ink:#0062CC;--core-red-soft:rgba(0,122,255,.12);--core-red-line:rgba(0,122,255,.35);
+  --dot-off:#D5D8E0;--dot-on:#1D1D1F;--dot-red:#007AFF;
+  --user-bubble:#007AFF;
+  --glass-bg:rgba(255,255,255,.55);--glass-edge:rgba(255,255,255,.85);--glass-shadow:0 18px 50px rgba(40,50,80,.16),0 2px 8px rgba(40,50,80,.08);
+  --glass-hi:rgba(255,255,255,.6);
+}
+:root[data-ui=glass] body{background:var(--ground);font-family:var(--font);letter-spacing:-.006em}
+
+/* Background: a clean graphite field, one soft light from the top, and a faint
+   light that follows the pointer. No colour blobs. */
+:root[data-ui=glass]{--ground:#0E0F12;--lx:50%;--ly:-20%}
+:root[data-ui=glass][data-theme=light]{--ground:#F2F2F5}
+:root[data-ui=glass] .ambient{display:block;position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(520px circle at var(--lx) var(--ly),rgba(255,255,255,.055),transparent 70%),
+    radial-gradient(1200px 520px at 50% -10%,rgba(120,140,170,.16),transparent 70%),
+    var(--ground)}
+:root[data-ui=glass][data-theme=light] .ambient{background:
+    radial-gradient(520px circle at var(--lx) var(--ly),rgba(255,255,255,.9),transparent 70%),
+    radial-gradient(1200px 520px at 50% -10%,rgba(255,255,255,1),transparent 70%),
+    var(--ground)}
+:root[data-ui=glass] .ambient i{display:none}
+
+/* Material helper */
+:root[data-ui=glass] .topbar .ui-switch,
+:root[data-ui=glass] .tabs,
+:root[data-ui=glass] .composer,
+:root[data-ui=glass] .system-state,
+:root[data-ui=glass] .toast,
+:root[data-ui=glass] .work>.panel:not(.chat-panel):not(.core-panel){
+  background:var(--glass-bg);-webkit-backdrop-filter:blur(28px) saturate(180%);backdrop-filter:blur(28px) saturate(180%);
+  border:1px solid transparent;box-shadow:var(--glass-shadow),inset 0 1px 0 var(--glass-edge),inset 0 0 0 1px var(--line);
+}
+
+/* Top bar */
+:root[data-ui=glass] .topbar{background:transparent;padding:14px 22px 6px}
+:root[data-ui=glass] .wordmark{font:600 15px/1 var(--display);letter-spacing:-.01em;text-transform:none}
+:root[data-ui=glass] .brand-light{width:9px;height:9px;background:conic-gradient(from 200deg,#0A84FF,#30D158,#FF9F0A,#FF375F,#0A84FF);box-shadow:0 0 12px rgba(10,132,255,.6)}
+:root[data-ui=glass] .calendar-widget #clock{font:600 20px/1 var(--display);letter-spacing:-.02em}
+:root[data-ui=glass] .calendar-date #weekday,:root[data-ui=glass] .calendar-date #date{font-family:var(--font)}
+:root[data-ui=glass] .system-state{font:500 11px/1 var(--font);letter-spacing:0;color:var(--ink-2);padding:8px 12px}
+:root[data-ui=glass] body:not([data-activity=idle]) .system-state{color:var(--accent-ink)}
+:root[data-ui=glass] .ui-switch{border:0;padding:3px}
+:root[data-ui=glass] .ui-switch button{font:500 12px/1 var(--font);letter-spacing:0;color:var(--ink-2)}
+:root[data-ui=glass] .ui-switch button[aria-checked=true]{background:var(--glass-hi);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.3)}
+
+/* Tab capsule with a lens that slides between tabs */
+:root[data-ui=glass] .tabs{border-radius:999px;padding:4px;margin:8px auto 2px;gap:0}
+:root[data-ui=glass] .tab{font:500 13px/1 var(--font);letter-spacing:0;color:var(--ink-2);min-height:34px;padding:8px 14px}
+:root[data-ui=glass] .tab:not([aria-current=page]):hover{background:transparent;color:var(--ink)}
+:root[data-ui=glass] .tab-indicator{background:var(--glass-hi);box-shadow:0 2px 10px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.35),inset 0 0 0 1px rgba(255,255,255,.08)}
+:root[data-ui=glass].has-tab-indicator .tab[aria-current=page],:root[data-ui=glass].has-tab-indicator .tab[aria-current=page] .count{color:var(--ink)}
+:root[data-ui=glass] .tab .count{color:var(--ink-3)}
+
+/* Stage: the face rests on a glass orb */
+:root[data-ui=glass] .stage .face-wrap{position:relative;border-radius:50%}
+:root[data-ui=glass] .stage .face-wrap::before{content:"";position:absolute;inset:-7%;border-radius:50%;z-index:-1;background:radial-gradient(120% 120% at 30% 20%,rgba(255,255,255,.18),rgba(255,255,255,.03) 46%,rgba(0,0,0,.08));-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%);box-shadow:var(--glass-shadow),inset 0 1px 1px rgba(255,255,255,.45),inset 0 -10px 30px rgba(0,0,0,.12);transition:transform .6s var(--spring)}
+:root[data-ui=glass] body:not([data-activity=idle]) .stage .face-wrap::before{box-shadow:var(--glass-shadow),0 0 0 2px rgba(10,132,255,.35),0 0 40px rgba(10,132,255,.25),inset 0 1px 1px rgba(255,255,255,.45)}
+:root[data-ui=glass] .face-button:hover~*,:root[data-ui=glass] .stage .face-wrap:hover::before{transform:scale(1.03)}
+:root[data-ui=glass] .state-line{font:600 17px/1.25 var(--display);letter-spacing:-.02em;text-transform:none;color:var(--ink)}
+:root[data-ui=glass] .state-sub{font:400 13px/1.4 var(--font);color:var(--ink-3)}
+:root[data-ui=glass] .core-panel .core-greeting{font:600 clamp(26px,3.2vw,38px)/1.1 var(--display);letter-spacing:-.03em}
+:root[data-ui=glass] .core-connect .conn{font:500 12px/1 var(--font);letter-spacing:0;text-transform:none;color:var(--ink-3)}
+:root[data-ui=glass] .core-connect .conn.on i{background:#30D158;box-shadow:0 0 8px #30D158}
+:root[data-ui=glass] .core-ideas button,:root[data-ui=glass] .suggestions button{background:var(--glass-bg)!important;-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%);box-shadow:inset 0 1px 0 var(--glass-edge),inset 0 0 0 1px var(--line);color:var(--ink);font:500 13px/1.3 var(--font)!important;transition:transform .35s var(--spring),background-color .2s}
+:root[data-ui=glass] .core-ideas button:active,:root[data-ui=glass] .suggestions button:active{transform:scale(.96)}
+
+/* Panels: grouped glass sheets with a large title that collapses */
+:root[data-ui=glass] .work>.panel:not(.chat-panel):not(.core-panel){border-radius:26px;margin:4px 0 0}
+:root[data-ui=glass] .work>.panel:not(.chat-panel) .panel-head{background:color-mix(in srgb,var(--solid) calc(var(--collapse,0) * 80%),transparent);-webkit-backdrop-filter:blur(calc(var(--collapse,0) * 24px));backdrop-filter:blur(calc(var(--collapse,0) * 24px))}
+:root[data-ui=glass] .panel-head h2{font:700 28px/1.1 var(--display)!important;letter-spacing:-.03em!important;text-transform:none!important}
+:root[data-ui=glass] .panel-head .chat-title{font:600 17px/1.2 var(--display)!important;letter-spacing:-.01em!important}
+:root[data-ui=glass] .ghost{font:500 13px/1 var(--font);letter-spacing:0;text-transform:none;border:0;background:var(--surface-3);color:var(--accent-ink)}
+:root[data-ui=glass] .panel-note,:root[data-ui=glass] .field-note,:root[data-ui=glass] .history small,:root[data-ui=glass] .who,:root[data-ui=glass] .byline{font-family:var(--font);letter-spacing:0;text-transform:none}
+:root[data-ui=glass] .setting{padding:16px 0}
+:root[data-ui=glass] .setting+.setting{border-top:1px solid var(--line)}
+:root[data-ui=glass] .setting h3{font:600 15px/1.3 var(--font);letter-spacing:-.01em;text-transform:none}
+:root[data-ui=glass] .setting button,:root[data-ui=glass] .task-form button,:root[data-ui=glass] .inline-field button,:root[data-ui=glass] .name-gate button,:root[data-ui=glass] .form-actions button{font:600 14px/1 var(--font);letter-spacing:0;text-transform:none;background:var(--accent);color:#fff;border-radius:999px}
+:root[data-ui=glass] .setting-actions button+button,:root[data-ui=glass] .form-actions button+button{background:var(--surface-3);color:var(--accent-ink)}
+:root[data-ui=glass] .setting select,:root[data-ui=glass] .setting input[type=password],:root[data-ui=glass] .inline-field select,:root[data-ui=glass] .stack-form input,:root[data-ui=glass] .stack-form textarea,:root[data-ui=glass] .stack-form select,:root[data-ui=glass] .task-form input{background:var(--surface-2);border-radius:12px}
+:root[data-ui=glass] .history button[aria-current=true]{background:var(--core-red-soft);box-shadow:none}
+:root[data-ui=glass] .plugin-card,:root[data-ui=glass] .skill-card,:root[data-ui=glass] .mcp-row{background:var(--surface-2);border-radius:18px}
+:root[data-ui=glass] .plugin-ready{font-family:var(--font);letter-spacing:0;text-transform:none;color:#30D158}
+:root[data-ui=glass] .plugin-ready::before{background:#30D158}
+:root[data-ui=glass] .segmented{background:var(--surface-2)}
+:root[data-ui=glass] .segmented button[aria-selected=true]{background:var(--glass-hi);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+
+/* Conversation: iMessage-style bubbles */
+:root[data-ui=glass] .bubble{font:400 16px/1.5 var(--font);letter-spacing:-.01em}
+:root[data-ui=glass] .msg.user .bubble{background:var(--user-bubble);color:#fff;border-radius:20px 20px 6px 20px;box-shadow:0 6px 18px rgba(10,132,255,.25)}
+:root[data-ui=glass] .msg.assistant .bubble{background:var(--glass-bg);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);padding:12px 16px;border-radius:20px 20px 20px 6px;box-shadow:inset 0 0 0 1px var(--line);max-width:min(72ch,92%)}
+:root[data-ui=glass] .msg.notice .bubble,:root[data-ui=glass] .msg.error .bubble{background:transparent;padding:0;box-shadow:none}
+:root[data-ui=glass] .who{font:600 12px/1 var(--font);color:var(--ink-3)}
+:root[data-ui=glass] .caret{background:var(--accent);border-radius:3px}
+:root[data-ui=glass] .welcome-hello{font:700 clamp(30px,3.6vw,44px)/1.05 var(--display);letter-spacing:-.035em}
+:root[data-ui=glass] .orbit i{background:var(--ink-2)}:root[data-ui=glass] .orbit i:first-child{background:var(--accent)}
+:root[data-ui=glass] .fact-label{font-family:var(--font);letter-spacing:0;text-transform:none;color:var(--accent-ink)}
+:root[data-ui=glass] .fact-timer{background:var(--accent)}
+
+/* Chat bar: a floating glass capsule */
+:root[data-ui=glass] .composer{border-radius:26px;padding:12px 14px 10px}
+:root[data-ui=glass] .composer:focus-within{box-shadow:var(--glass-shadow),inset 0 1px 0 var(--glass-edge),0 0 0 3px rgba(10,132,255,.35)}
+:root[data-ui=glass] .composer textarea{font:400 16px/1.5 var(--font)}
+:root[data-ui=glass] .composer-tools .chip,:root[data-ui=glass] .composer-tools .chip-select{font:500 13px/1 var(--font);color:var(--ink-2)}
+:root[data-ui=glass] .composer-tools .chip[aria-pressed=true]{background:var(--core-red-soft);color:var(--accent-ink)}
+:root[data-ui=glass] .composer-row #send{background:var(--accent);box-shadow:0 4px 14px rgba(10,132,255,.45);transition:transform .35s var(--spring)}
+:root[data-ui=glass] .composer-row #send:active{transform:scale(.9)}
+:root[data-ui=glass] .composer-hint{font:400 11px/1.5 var(--font);color:var(--ink-3)}
+:root[data-ui=glass] .toast{color:var(--ink);font:500 14px/1.3 var(--font);letter-spacing:0}
+:root[data-ui=glass] .preview,:root[data-ui=glass] .name-gate{background:var(--solid);border-color:var(--line);border-radius:28px}
+:root[data-ui=glass] .name-gate h2{font:700 26px/1.15 var(--display);letter-spacing:-.03em;text-transform:none}
+
+/* Reveal: materialize (blur + scale together) rather than slide */
+:root[data-ui=glass] .rv{transform:translate3d(0,10px,0) scale(.96);filter:blur(10px)}
+
+/* Pointer: a crisp white dot that never lags, a soft ring that follows it with a
+   spring, and over anything you can press the ring becomes a highlight around it. */
+
+/* Pointer specular on glass panels and cards */
+:root[data-ui=glass] .composer,:root[data-ui=glass] .plugin-card,:root[data-ui=glass] .skill-card{position:relative}
+:root[data-ui=glass] .composer::after,:root[data-ui=glass] .plugin-card::after,:root[data-ui=glass] .skill-card::after,:root[data-ui=glass] .suggestions>button::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(220px circle at var(--px,50%) var(--py,50%),rgba(255,255,255,.12),transparent 60%)}
+:root[data-ui=glass] .composer:hover::after,:root[data-ui=glass] .plugin-card:hover::after,:root[data-ui=glass] .skill-card:hover::after,:root[data-ui=glass] .suggestions>button:hover::after{opacity:1}
+:root[data-ui=glass] .suggestions>button{position:relative}
+
+/* Chess in system colours */
+:root[data-ui=glass] .chess-square.light{background:#E9EDF5}:root[data-ui=glass] .chess-square.dark{background:#7D93B8}
+:root[data-ui=glass] .chess-board{border-radius:18px;box-shadow:var(--glass-shadow)}
+
+@media (prefers-reduced-transparency:reduce){
+  :root[data-ui=glass]{--glass-bg:var(--solid);--surface:var(--solid)}
+  :root[data-ui=glass] .ambient{display:none}
+  :root[data-ui=glass] *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+}
+@media (prefers-contrast:more){:root[data-ui=glass]{--glass-bg:var(--solid);--line:rgba(255,255,255,.45)}}
+@media (max-width:640px){:root[data-ui=glass] .topbar{padding:12px 14px 4px}:root[data-ui=glass] .composer{border-radius:22px}}

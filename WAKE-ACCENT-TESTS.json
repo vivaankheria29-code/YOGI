@@ -1,0 +1,19 @@
+{
+  "matcherCases": 7,
+  "negativeCases": 6,
+  "checks": [
+    "Raw recognition shown; ordinary background transcript does not activate",
+    "Low-confidence accented interim wake acknowledged; final question sent without wake words",
+    "Wake phrase found in an alternate transcription",
+    "Split wake tokens and low-confidence question captured",
+    "Hindi wake and Hindi question after a service restart",
+    "Interim question is never auto-submitted; final revision is sent"
+  ],
+  "sent": [
+    "what time is it?",
+    "explain gravity",
+    "how are you",
+    "आज कौन सा दिन है?",
+    "this is the confirmed question"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "Bridge emits typed activity metadata",
+    "Reading/searching/reasoning/creating/working/tool faces",
+    "Approval waits with an expectant face",
+    "Streaming answer uses writing face",
+    "Completion uses success face",
+    "Emotional reply keywords do not choose expressions",
+    "Idle stays calm after 30 seconds",
+    "Failure face clears after its display window",
+    "No browser exceptions"
+  ]
+}

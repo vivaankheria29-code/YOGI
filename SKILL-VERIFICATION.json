@@ -1,0 +1,21 @@
+{
+  "total": 750,
+  "categories": {
+    "frontend": 178,
+    "backend": 322,
+    "animation": 250
+  },
+  "newAnimationSkills": 250,
+  "newGitHubSkills": 8,
+  "newOriginalRecipes": 242,
+  "nativeCodexSkills": 750,
+  "nativeCodexParsingErrors": 0,
+  "installerChecks": 9,
+  "automaticRoutingChecks": 9,
+  "catalogBrowserChecks": 7,
+  "recipeSyntaxChecks": 242,
+  "recipeKeyframeChecks": 242,
+  "componentFamilyProbeChecks": 25,
+  "original500SkillHashesPreserved": true,
+  "provenance": "Eight MIT-licensed official GSAP skills at a pinned GitHub commit, plus 242 original YOGI animation recipes; these are not 250 existing GitHub skills."
+}

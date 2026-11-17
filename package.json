@@ -1,0 +1,15 @@
+{
+  "name": "yogi-console",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node launcher.mjs",
+    "check": "node --check server.mjs && node --check codex-bridge.mjs && node --check uploads.mjs && node --check public/app.js && node --check identity.mjs"
+  },
+  "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.73.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

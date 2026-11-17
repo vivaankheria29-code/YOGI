@@ -1,0 +1,131 @@
+/* =====================================================================
+   MARIGOLD — YOGI as a calm, bold presence.
+   Idea: the marigold garland. A deep peacock-teal field, one flower colour,
+   type set large. YOGI's state is the headline. No lines, no glass, no
+   gradients: surfaces are separated by steps in tone, and the pointer is a
+   petal that scatters petals when you click.
+   ===================================================================== */
+:root[data-ui=marigold]{
+  --ground:#0D2628;--surface:#12322F;--surface-2:#173D3A;--surface-3:#1E4A46;--line:#1E4A46;
+  --ink:#F4EFE4;--ink-2:#D9D1BF;--ink-3:#B3AA95;
+  --accent:#F2A33A;--on-accent:#1B1205;--accent-ink:#F7BC5F;--focus:#F7BC5F;
+  --core-red:#F2A33A;--core-red-hover:#FFB651;--core-red-ink:#F7BC5F;--core-red-soft:#2A3B2C;--core-red-line:#5F5A35;
+  --red:#F2A33A;--live:#F2A33A;--danger:#FF8A7A;
+  --dot-off:#163A38;--dot-on:#F2A33A;--dot-red:#F4EFE4;--dot-grid:transparent;
+  --user-bubble:#F2A33A;
+  --font:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;--display:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;--mono:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;
+  --radius:24px;--radius-sm:18px;
+}
+:root[data-ui=marigold][data-theme=light]{
+  --ground:#E7EEE9;--surface:#F4F8F5;--surface-2:#DCE6E0;--surface-3:#CCDAD2;--line:#CCDAD2;
+  --ink:#0D2628;--ink-2:#23413F;--ink-3:#3F5B58;
+  --accent:#E8951F;--on-accent:#1B1205;--accent-ink:#8A4F00;--focus:#0D2628;
+  --core-red:#E8951F;--core-red-hover:#D4850F;--core-red-ink:#8A4F00;--core-red-soft:#F6E2BF;--core-red-line:#E3C083;
+  --dot-off:#D3DFD8;--dot-on:#0D2628;--dot-red:#E8951F;
+  --user-bubble:#0D2628;
+}
+:root[data-ui=marigold] body{background:var(--ground);font-family:var(--font)}
+
+/* Top bar: a wordmark, the time, the switch. Everything quiet so the state can be loud. */
+:root[data-ui=marigold] .topbar{padding:18px 28px 6px}
+:root[data-ui=marigold] .wordmark{font:700 17px/1 var(--display);letter-spacing:-.02em;text-transform:none}
+:root[data-ui=marigold] .brand-light{width:12px;height:12px;background:var(--accent);border-radius:50% 50% 50% 0;transform:rotate(-45deg)}
+:root[data-ui=marigold] .calendar-widget #clock{font:700 22px/1 var(--display);letter-spacing:-.03em}
+:root[data-ui=marigold] .calendar-date #weekday,:root[data-ui=marigold] .calendar-date #date{font-family:var(--font)}
+:root[data-ui=marigold] .system-state{border:0;background:var(--surface);font:500 12px/1 var(--font);letter-spacing:0;text-transform:none;color:var(--ink-2);padding:9px 14px}
+:root[data-ui=marigold] body:not([data-activity=idle]) .system-state{background:var(--accent);color:var(--on-accent)}
+:root[data-ui=marigold] .ui-switch{border:0;background:var(--surface)}
+:root[data-ui=marigold] .ui-switch button{font:500 12px/1 var(--font);letter-spacing:0;color:var(--ink-2)}
+:root[data-ui=marigold] .ui-switch button[aria-checked=true]{background:var(--accent);color:var(--on-accent)}
+
+/* Tabs: plain words, a marigold field slides under the current one */
+:root[data-ui=marigold] .tabs{margin:10px auto 2px;gap:4px}
+:root[data-ui=marigold] .tab{font:500 14px/1 var(--font);letter-spacing:-.01em;text-transform:none;color:var(--ink-2);min-height:38px;padding:9px 14px}
+:root[data-ui=marigold] .tab:not([aria-current=page]):hover{background:var(--surface);color:var(--ink)}
+:root[data-ui=marigold] .tab-indicator{background:var(--accent)}
+:root[data-ui=marigold].has-tab-indicator .tab[aria-current=page],:root[data-ui=marigold].has-tab-indicator .tab[aria-current=page] .count{color:var(--on-accent)}
+
+/* Stage: the face is a marigold of light; the state is the headline */
+:root[data-ui=marigold] .stage .face-wrap{position:relative}
+:root[data-ui=marigold] .stage .face-wrap::before{content:"";position:absolute;inset:-5%;border-radius:50%;background:var(--surface);z-index:-1;transform:scale(var(--bloom,1));transition:transform .9s cubic-bezier(.2,.9,.25,1.15)}
+:root[data-ui=marigold] body:not([data-activity=idle]) .stage .face-wrap{--bloom:1.06}
+:root[data-ui=marigold] body[data-activity=listening] .stage .face-wrap::before{background:var(--surface-3)}
+:root[data-ui=marigold] .state-line{font:700 clamp(26px,3.4vw,40px)/1 var(--display)!important;letter-spacing:-.04em!important;text-transform:none!important;color:var(--ink)}
+:root[data-ui=marigold] body:not([data-activity=idle]) .state-line{color:var(--accent)}
+:root[data-ui=marigold] .state-sub{font:400 15px/1.45 var(--font);color:var(--ink-2)}
+:root[data-ui=marigold] .core-panel .core-greeting{font:700 clamp(30px,4.2vw,52px)/1.02 var(--display);letter-spacing:-.045em;max-width:16ch}
+:root[data-ui=marigold] .core-connect .conn{font:500 13px/1 var(--font);letter-spacing:0;text-transform:none;color:var(--ink-3)}
+:root[data-ui=marigold] .core-connect .conn.on i{background:var(--accent);width:8px;height:8px}
+:root[data-ui=marigold] .core-ideas button,:root[data-ui=marigold] .suggestions button{background:var(--surface)!important;color:var(--ink);font:500 14px/1.3 var(--font)!important;border-radius:999px!important;transition:background-color .2s,color .2s,transform .25s cubic-bezier(.2,.9,.25,1.3)}
+:root[data-ui=marigold] .core-ideas button:hover,:root[data-ui=marigold] .suggestions button:hover{background:var(--accent)!important;color:var(--on-accent)}
+:root[data-ui=marigold] .suggestions{grid-template-columns:1fr 1fr}
+:root[data-ui=marigold] .suggestions button{border-radius:var(--radius)!important;padding:16px 18px!important}
+
+/* Panels: whole fields of tone, big sentence-case titles */
+:root[data-ui=marigold] .work>.panel:not(.chat-panel):not(.core-panel){background:var(--surface);border:0;border-radius:28px}
+:root[data-ui=marigold] .work>.panel:not(.chat-panel) .panel-head{background:var(--surface)}
+:root[data-ui=marigold] .panel-head h2{font:700 34px/1 var(--display)!important;letter-spacing:-.045em!important;text-transform:none!important}
+:root[data-ui=marigold] .panel-head .chat-title{font:700 20px/1.1 var(--display)!important;letter-spacing:-.03em!important}
+:root[data-ui=marigold] .ghost{border:0;background:var(--surface-2);font:500 13px/1 var(--font);letter-spacing:0;text-transform:none;color:var(--ink)}
+:root[data-ui=marigold] .ghost:hover{background:var(--accent);color:var(--on-accent)}
+:root[data-ui=marigold] .panel-note,:root[data-ui=marigold] .field-note,:root[data-ui=marigold] .history small,:root[data-ui=marigold] .who,:root[data-ui=marigold] .byline,:root[data-ui=marigold] .count,:root[data-ui=marigold] .file-meta,:root[data-ui=marigold] .think-time{font-family:var(--font);letter-spacing:0;text-transform:none}
+:root[data-ui=marigold] .setting+.setting{border-top:0;margin-top:6px}
+:root[data-ui=marigold] .setting{background:var(--surface-2);border-radius:var(--radius-sm);padding:18px 20px}
+:root[data-ui=marigold] .setting h3{font:700 18px/1.2 var(--display);letter-spacing:-.02em;text-transform:none}
+:root[data-ui=marigold] .setting p{color:var(--ink-2)}
+:root[data-ui=marigold] .setting button,:root[data-ui=marigold] .task-form button,:root[data-ui=marigold] .inline-field button,:root[data-ui=marigold] .name-gate button,:root[data-ui=marigold] .form-actions button{font:600 14px/1 var(--font);letter-spacing:0;text-transform:none;background:var(--accent);color:var(--on-accent);border-radius:999px}
+:root[data-ui=marigold] .setting-actions button+button,:root[data-ui=marigold] .form-actions button+button{background:var(--surface-3);color:var(--ink)}
+:root[data-ui=marigold] .setting select,:root[data-ui=marigold] .setting input[type=password],:root[data-ui=marigold] .inline-field select,:root[data-ui=marigold] .stack-form input,:root[data-ui=marigold] .stack-form textarea,:root[data-ui=marigold] .stack-form select,:root[data-ui=marigold] .task-form input{background:var(--surface-3);border-radius:14px}
+:root[data-ui=marigold] .history button[aria-current=true]{background:var(--surface-2);box-shadow:inset 6px 0 0 var(--accent)}
+:root[data-ui=marigold] .plugin-card,:root[data-ui=marigold] .skill-card,:root[data-ui=marigold] .mcp-row{background:var(--surface-2);border-radius:var(--radius-sm)}
+:root[data-ui=marigold] .plugin-card:hover,:root[data-ui=marigold] .skill-card:hover{background:var(--surface-3)}
+:root[data-ui=marigold] .plugin-ready,:root[data-ui=marigold] .plugin-unavailable{font-family:var(--font);letter-spacing:0;text-transform:none;font-size:13px}
+:root[data-ui=marigold] .plugin-ready::before{background:var(--accent)}
+:root[data-ui=marigold] .segmented{background:var(--surface-2)}
+:root[data-ui=marigold] .segmented button[aria-selected=true]{background:var(--accent);color:var(--on-accent);box-shadow:none}
+
+/* Conversation */
+:root[data-ui=marigold] .bubble{font:400 17px/1.55 var(--font)}
+:root[data-ui=marigold] .msg.user .bubble{background:var(--user-bubble);color:var(--on-accent);border-radius:24px 24px 6px 24px;font-weight:500}
+:root[data-ui=marigold][data-theme=light] .msg.user .bubble{color:#F4EFE4}
+:root[data-ui=marigold] .who{font:600 13px/1 var(--font);color:var(--accent-ink)}
+:root[data-ui=marigold] .msg.user .files{justify-content:flex-end}
+:root[data-ui=marigold] .caret{background:var(--accent);border-radius:50%;width:.6em;height:.6em;vertical-align:-.02em}
+:root[data-ui=marigold] .welcome-hello{font:700 clamp(34px,4.6vw,58px)/1 var(--display);letter-spacing:-.05em}
+:root[data-ui=marigold] .orbit i{background:var(--ink-2)}:root[data-ui=marigold] .orbit i:first-child{background:var(--accent)}
+:root[data-ui=marigold] .think-lines i{background:var(--surface-2);border-radius:6px;height:12px;opacity:1}
+:root[data-ui=marigold] .fact{background:var(--surface-2)}
+:root[data-ui=marigold] .fact-label{font:600 13px/1 var(--font);letter-spacing:0;text-transform:none;color:var(--accent-ink)}
+:root[data-ui=marigold] .fact-timer{background:var(--accent);height:4px}
+:root[data-ui=marigold] .bubble pre{background:var(--surface)}
+:root[data-ui=marigold] .bubble code{background:var(--surface-2)}
+
+/* Chat bar: one field of tone, a marigold send button */
+:root[data-ui=marigold] .composer{border:0;background:var(--surface);border-radius:28px;padding:14px 16px 12px;transition:background-color .2s}
+:root[data-ui=marigold] .composer:focus-within{background:var(--surface-2)}
+:root[data-ui=marigold] .composer textarea{font:400 17px/1.5 var(--font)}
+:root[data-ui=marigold] .composer-tools .chip,:root[data-ui=marigold] .composer-tools .chip-select{font:500 13px/1 var(--font);color:var(--ink-2)}
+:root[data-ui=marigold] .composer-tools .chip[aria-pressed=true]{background:var(--surface-3);color:var(--ink)}
+:root[data-ui=marigold] .composer-tools .chip[aria-pressed=true]::before{background:var(--accent);width:6px;height:6px}
+:root[data-ui=marigold] .composer-tools #speakToggle{border:0;background:var(--surface-2)}
+:root[data-ui=marigold] .composer-row #send{background:var(--accent);color:var(--on-accent);width:42px;height:42px}
+:root[data-ui=marigold] .composer-row #send:hover{background:var(--core-red-hover)}
+:root[data-ui=marigold] .composer-hint{font:400 12px/1.5 var(--font);color:var(--ink-3)}
+:root[data-ui=marigold] .toast{background:var(--accent);color:var(--on-accent);font:600 14px/1.3 var(--font);letter-spacing:0}
+:root[data-ui=marigold] .preview,:root[data-ui=marigold] .name-gate{background:var(--surface);border:0;border-radius:28px}
+:root[data-ui=marigold] .name-gate h2{font:700 30px/1.05 var(--display);letter-spacing:-.04em;text-transform:none}
+:root[data-ui=marigold] .name-gate input{background:var(--surface-2)}
+
+/* Reveal: rise further, no blur */
+:root[data-ui=marigold] .rv{transform:translate3d(0,28px,0);filter:none}
+
+/* Edge fades are the only softening; no hairlines anywhere */
+:root[data-ui=marigold] .setting+.setting{border-top:0}
+
+/* The petal pointer */
+
+/* Chess in the garden's colours */
+:root[data-ui=marigold] .chess-square.light{background:#F4EFE4}:root[data-ui=marigold] .chess-square.dark{background:#3E7D72}
+:root[data-ui=marigold] .chess-board{border-radius:20px;box-shadow:none}
+:root[data-ui=marigold] .chess-square.selected{box-shadow:inset 0 0 0 4px var(--accent)}
+@media (max-width:640px){:root[data-ui=marigold] .topbar{padding:14px 16px 4px}:root[data-ui=marigold] .suggestions{grid-template-columns:1fr}}

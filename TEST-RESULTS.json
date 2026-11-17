@@ -1,0 +1,16 @@
+[
+  "1: malformed payloads rejected; 11: all 100 tasks retained",
+  "2: external image blocked; workspace image still delivered",
+  "12,13: Hindi preserved and answers unchanged",
+  "4: playback echo filtered without blocking a different user question",
+  "7,10: stable file IDs, aggregate quota, scoped deletion and freed capacity",
+  "15: provider audio yields its first chunk before generation completes",
+  "14: authentication probe changes from disconnected to connected without restart",
+  "3,9: all 90 messages migrated and restored from IndexedDB",
+  "5: wake question sent alone; typed draft preserved",
+  "7,8: correct same-name file opens before and after reload",
+  "repeat wake/question/reply/rearm cycles still work",
+  "4: app ignores its own spoken wake phrase and still accepts a different user interruption",
+  "9: storage failure stays visible; retry commits successfully",
+  "6,15: queued voice waits for explicit activation, real MP3 starts before HTTP stream finishes"
+]

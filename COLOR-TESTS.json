@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Hex editing immediately updates the accent and chooses readable button text",
+    "Background, panels, text, and face colors persist across reload",
+    "Invalid hex cannot alter the theme; named presets restore a complete valid palette",
+    "Light and dark palettes are independent; reset affects only the current mode",
+    "Low contrast is flagged while the editor and Reset stay readable",
+    "Native color picker input updates the live palette and matching hex field",
+    "Editor fits phone portrait and landscape, including reduced motion"
+  ]
+}

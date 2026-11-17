@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "Strong music cycles through eight complementary expressions over beat phrases",
+    "Rig values interpolate between poses without abrupt full-pose jumps",
+    "Silence does not trigger new expressions",
+    "Stopping clears expression blend history",
+    "Gentler audio uses calmer expression phrases"
+  ],
+  "maxStep": 0.9019857573905519
+}

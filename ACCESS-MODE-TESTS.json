@@ -1,0 +1,28 @@
+{
+  "behavior": {
+    "checks": [
+      "Full access is the default; policy values are explicit and validated",
+      "Mode persists; invalid or corrupt settings do not silently grant full access",
+      "Actual bridge starts no-prompt full-access sessions and reuses the correct mode",
+      "Changing access invalidates reused conversation permissions on the next turn",
+      "Task scope, service consent, and explicit email-send approval remain intact"
+    ]
+  },
+  "ui": {
+    "checks": [
+      "Settings clearly shows Full access and no local approval prompts",
+      "Restricted mode saves and reloads correctly",
+      "A busy reply blocks a mode change and restores the actual selected mode",
+      "Access scope remains clear and the control fits phone width"
+    ],
+    "errors": []
+  },
+  "nativeRuntime": {
+    "accepted": true,
+    "approvalPolicy": "never",
+    "sandbox": {
+      "type": "dangerFullAccess"
+    },
+    "modelTurnStarted": false
+  }
+}

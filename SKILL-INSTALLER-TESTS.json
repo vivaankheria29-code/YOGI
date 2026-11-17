@@ -1,0 +1,20 @@
+{
+  "checks": [
+    "750 unique skills with pinned source commits, licenses, and file checksums",
+    "Fresh offline startup installs all 750 complete skill folders",
+    "Repeat startup reuses all skills without rewriting or downloading",
+    "Missing managed files are repaired from the verified offline pack",
+    "User modifications are preserved and reported instead of overwritten",
+    "Search and scoped text reading find relevant skills without allowing traversal",
+    "Tampered archives are rejected before skill files are installed",
+    "Malformed catalog paths are rejected",
+    "Existing 500-skill installations upgrade to 750 without rewriting original skill content"
+  ],
+  "installed": 750,
+  "categories": {
+    "frontend": 178,
+    "backend": 322,
+    "animation": 250
+  },
+  "files": 3120
+}

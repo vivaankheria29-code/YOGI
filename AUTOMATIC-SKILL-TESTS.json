@@ -1,0 +1,51 @@
+{
+  "checks": [
+    "React and Vue requests automatically load the correct framework guidance",
+    "Backend and database guidance is selected together",
+    "Motion, responsive design, and authentication select appropriate guidance without unrelated platforms",
+    "Relevant project context carries into follow-ups but casual requests do not trigger development skills",
+    "Explicit requests without skills are respected",
+    "Automatic context is limited to two skills and a bounded text budget",
+    "The actual bridge attaches fresh skill instructions on every turn, including reused conversations",
+    "Bridge avoids automatic context for casual chat and opt-out turns",
+    "Animation requests automatically select precise new recipes or official GSAP guidance"
+  ],
+  "examples": {
+    "react": [
+      {
+        "name": "react-expert",
+        "category": "frontend",
+        "source": "https://github.com/Jeffallan/claude-skills/blob/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/react-expert/SKILL.md"
+      },
+      {
+        "name": "frontend-design",
+        "category": "frontend",
+        "source": "https://github.com/sickn33/antigravity-awesome-skills/blob/dcbd2ae71a0f36ddd4822354e05d476a4673b4cd/skills/frontend-design/SKILL.md"
+      }
+    ],
+    "backend": [
+      {
+        "name": "nodejs-backend-patterns",
+        "category": "backend",
+        "source": "https://github.com/wshobson/agents/blob/7e2fb559cf4b824b27f1fec49fe88f7511066d26/plugins/javascript-typescript/skills/nodejs-backend-patterns/SKILL.md"
+      },
+      {
+        "name": "postgres-pro",
+        "category": "backend",
+        "source": "https://github.com/Jeffallan/claude-skills/blob/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/postgres-pro/SKILL.md"
+      }
+    ],
+    "motion": [
+      {
+        "name": "yogi-motion-sequence-stagger",
+        "category": "animation",
+        "source": "https://developer.mozilla.org/en-US/docs/Web/API/Element/animate"
+      },
+      {
+        "name": "yogi-motion-sequence-interrupt",
+        "category": "animation",
+        "source": "https://developer.mozilla.org/en-US/docs/Web/API/Element/animate"
+      }
+    ]
+  }
+}

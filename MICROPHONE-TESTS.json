@@ -1,0 +1,25 @@
+{
+  "checks": [
+    "Manual mic captures low-confidence speech live, sends final text, and rearms wake without a second microphone stream",
+    "Stopping waits for the browser final result, including results delayed beyond the old 450ms deadline",
+    "Manual dictation survives service restarts without losing or duplicating final words; stale events are ignored",
+    "A missing end event recovers instead of locking the mic; late events cannot stop a newer session",
+    "Three successive wake/question/reply/rearm cycles send exactly once each",
+    "Network failure with no end event reconnects the wake listener",
+    "Permission denial displays a useful error and never claims the mic is ready",
+    "A speech service that never starts is replaced and retried",
+    "Saying Hey Yogi after clicking the mic switches to hands-free capture and auto-sends",
+    "Unsupported browsers cannot accidentally start a saved wake preference"
+  ],
+  "sent": [
+    "quiet accented final",
+    "late confirmed final",
+    "first sentence second final sentence",
+    "recover from missing end",
+    "repeated question 0",
+    "repeated question 1",
+    "repeated question 2",
+    "hands free after mic click"
+  ],
+  "realHardwareTested": false
+}

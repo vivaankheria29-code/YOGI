@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Decorative halos do not intercept input or spin while idle",
+    "Section entrances animate and rapid navigation leaves the final panel fully visible",
+    "App and OS reduced motion skip new entrance animations",
+    "Listening ripple follows microphone activity and disappears with reduced motion",
+    "Real request lifecycle drives working orbit and completion pulse without duplicate sends",
+    "Activity decoration stops completely when work finishes",
+    "Decorative face effects do not introduce horizontal scroll on phones"
+  ]
+}

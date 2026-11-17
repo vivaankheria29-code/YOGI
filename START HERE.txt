@@ -1,0 +1,190 @@
+YOGI — PORTABLE DESKTOP EDITION
+Created by Vivaan Kheria
+=================================
+
+1. Extract this entire ZIP to a writable folder. Do not run it inside the ZIP.
+2. On Windows, double-click START YOGI.cmd.
+   On macOS, double-click Start YOGI.command.
+   On Linux, run Start YOGI.sh (choose Run/Execute in your file manager).
+3. Codex is detected automatically. Complete Codex sign-in if prompted.
+4. The server starts and opens Chrome. Clicking Start again reuses the same
+   running copy. An occupied port is skipped automatically.
+
+WHAT IS INCLUDED
+YOGI's animated face with lip sync, voice controls, file previews, inline images, chat history UI, uploads, modes, tasks,
+web/image search, connected-app support, local reader, and reviewed email
+attachments. Dependencies are prebundled: no npm install is needed to run.
+Follow-ups reuse the current native Codex conversation, streamed tokens
+update only the active message, and repeat starts reuse the running server.
+
+NODE.JS
+An installed Node.js 22+ is used when available. Otherwise, the starter
+downloads a portable Node 24 LTS runtime from https://nodejs.org into
+.runtime/ and checks it against the official SHA-256 manifest before use.
+The first such download needs internet access. No administrator install
+and no machine-wide PowerShell execution-policy change are required.
+Supported runtime download targets: Windows, macOS, and Linux x64/ARM64.
+Linux needs curl, tar, and sha256sum or shasum if Node must be downloaded.
+
+CODEX
+Use a signed-in Codex desktop app or CLI that supports app-server. Detection
+checks PATH, common desktop locations, and Windows npm installations.
+If not found, set YOGI_CODEX_PATH to codex.exe, the native Codex binary,
+or the npm package's bin/codex.js, then start again.
+Official installation help: https://developers.openai.com/codex/cli/
+Each computer uses its own Codex account and plugin connections. A CLI
+installation without the desktop plugins will have fewer tools.
+
+CHROME
+Chrome is preferred automatically. Set YOGI_CHROME_PATH if yours is in
+a custom location. If Chrome is absent, the default browser opens instead;
+install Chrome for Chrome speech-recognition behavior.
+
+OPTIONAL ELEVENLABS VOICE
+Copy .env.example to .env in this folder and add YOUR ElevenLabs key.
+No API keys, sign-in tokens, private chats, uploaded files, generated
+projects, or runtime logs from the original computer are included.
+The assistant chat itself uses the device's Codex sign-in.
+
+DESKTOP / MOBILE LIMIT
+This package runs a local Node server and Codex. It is not an Android/iOS
+app and cannot run on phones or Chromebooks without an appropriate desktop
+Linux environment. macOS/Linux launch files may require Execute permission
+or an OS trust confirmation. In a terminal: sh 'Start YOGI.command'
+(macOS) or sh 'Start YOGI.sh' (Linux). OS restrictions cannot be bypassed
+by this ZIP. Windows is tested here; macOS/Linux launchers are included
+but have not been executed on those operating systems.
+
+TROUBLESHOOTING
+- Keep every extracted file together. Use a folder you can write to.
+- Logs: work/server.log and work/server-error.log. Current URL: work/launcher.json.
+- For a diagnostic report: START YOGI.cmd --diagnose on Windows, or
+  sh 'Start YOGI.sh' --diagnose / sh 'Start YOGI.command' --diagnose.
+- A firewall or proxy may block first-run downloads or cloud AI connections.
+- The server binds only to 127.0.0.1. It is not publicly hosted.
+- The local server remains running after the launch window exits.
+  Restarting the computer stops it. The chat's Stop button stops a reply.
+
+SOURCE AND REBUILD
+Editable source files are included. The starter runs server.bundle.mjs.
+After editing source, install dependencies with npm ci and rebuild using
+esbuild with bundle:true, platform:'node', target:'node22', format:'esm',
+and a createRequire(import.meta.url) banner; or remove server.bundle.mjs
+so the launcher runs server.mjs directly with installed dependencies.
+See THIRD-PARTY-NOTICES.txt for bundled dependencies and licenses.
+
+WHAT'S NEW IN YOGI
+- Nothing OS look: black and white with one red, dot-matrix type, and
+  YOGI's face as a circular LED dot matrix. She blinks, looks around,
+  thinks, and lip syncs to her real voice while she speaks. The ring of
+  dots turns red while she listens. Prefer the illustrated face? Settings >
+  Appearance > Face.
+- Waiting is never dead air: a thinking card with live status and short
+  facts, a voice warm-up animation, and speech that starts after the first
+  sentence instead of after the whole reply.
+- Attachments show previews before sending (image thumbnails, file cards
+  with type and size) and open in a full preview (images, PDFs, text,
+  audio, video). Long pastes become a text file.
+- Images YOGI creates are shown in the chat, with open and download links.
+- Present mode (P key or the Present button) for showing YOGI on a big
+  screen, with large captions of what she is saying.
+- Light theme for bright rooms and projectors (Settings > Appearance).
+- No ElevenLabs key? YOGI uses the browser's built-in voice instead.
+- Press Space to talk; press Space again and your message is sent.
+- JANMATE chats and tasks carry over when YOGI opens at the same address
+  (normally http://localhost:8341) in the same browser.
+
+HEY YOGI WAKE WORD
+In Settings, click Enable wake word and allow microphone access. Say Hey Yogi
+followed by your question; a short pause sends it. The setting is remembered.
+A short tone acknowledges activation after audio playback is unlocked.
+Hey Yogi can interrupt a reply. Temporary speech-service failures reconnect
+automatically. Disable wake word in Settings anytime.
+Keep YOGI open in Chrome. Browser/OS suspension can stop background listening;
+this is not a system-wide wake service when the browser is closed.
+Speech recognition may send audio to an online service and needs a connection.
+
+
+AUDIT REPAIRS (30 OCTOBER 2026)
+- Full history now migrates to this browser's IndexedDB database. Previously
+  truncated messages need an existing backup to recover.
+- Save failures remain visible. Use Retry saving or export a JSON backup.
+- If a restored voice is blocked, press Enable audio in the chat bar.
+- Saved attachment originals can be previewed after refreshing.
+- Settings > Saved files shows usage and explicitly confirmed file deletion.
+  A 2 GB total upload budget prevents unlimited retained uploads.
+- Settings > Engine > Reconnect rechecks sign-in without restarting the app.
+- Streaming MP3 playback is available in supported Chrome versions.
+- Vivaan Kheria is credited as the app creator. Model/provider questions are
+  answered accurately rather than rewriting unrelated replies.
+See FIXES.md and TEST-RESULTS.json for the complete repair and test record.
+
+
+WAKE-WORD ACCENT AND CAPTURE UPDATE
+- Recognizes common forms such as Hey Yogi, Hay Yogee, Hey Yoga, Hi Jogi,
+  split "yo gee", and Hindi "हे योगी".
+- Uses recognition alternatives and no longer rejects explicit wake phrases
+  solely because of confidence scores or a separate microphone level meter.
+- Manual dictation retains its calibrated noise filtering.
+- A tone and visible "Yes, I'm listening" confirmation acknowledge activation.
+- Unfinished guesses are never submitted as questions; confirmed questions are
+  sent after a pause. "Heard" in Settings shows the recognizer's raw words.
+- Tests covered seven phrase forms, six unrelated negative phrases, five
+  complete speech flows with low confidence, and the earlier 14 repair groups.
+- These are simulated speech-event tests. Try your own microphone and accent
+  in Chrome; browser speech recognition still depends on its service.
+
+
+FACE EXPRESSIONS UPDATE
+Twelve expression presets are available: cheerful grin, laugh, wink,
+surprised, curious, focused, confused, concerned, proud smile, sleepy,
+heart eyes, and relieved smile.
+- Settings > Appearance > Preview expression > Preview face shows each pose
+  temporarily, then returns to automatic behavior.
+- Listening is curious; writing is focused; failures look concerned.
+- Automatic expressions follow live work activity. Idle stays calm; reply
+  keywords no longer choose facial emotions.
+- Audio-driven lip sync remains active during expressions.
+- Reduce motion keeps workflow poses static.
+- Verified all 12 previews, automatic restoration, 390/1440 px overflow,
+  lip sync while winking, reduced motion, and 10 reply selection cases.
+
+
+WORKFLOW-DRIVEN FACE UPDATE
+The automatic face represents what YOGI is doing: listening, reading files,
+searching, reasoning, writing, generating images, running tools, waiting for
+approval, preparing speech, speaking, completion, and errors.
+- Typed progress metadata from the engine drives each work phase.
+- Completed searches/tools return to a reasoning face while results are reviewed.
+- No random idle moods or reply-keyword emotion guessing.
+- Manual expression previews remain in Settings.
+- Only activity labels are used; private reasoning text is not displayed.
+- Event-to-face tests passed, including approval, completion, error recovery,
+  and calm idle after a simulated 30 seconds.
+
+CURSOR EFFECTS
+Dot Matrix cursor (concept 02): white dotted arrow with a red accent, faint red follower, dotted red hover outline, and red/white dot bursts on click. Turn off Animated cursor & click effects in Settings > Appearance. Text controls, dialogs, touch, and reduced-motion mode keep the native cursor. Browser checks passed for hover, clicking, cleanup, typing, saved settings, reduced motion, dialogs, window blur, and touch.
+
+
+MICROPHONE AND WAKE REPAIR — 31 October 2026
+Manual and wake capture use a single speech-recognition stream. Live dictation no longer depends on a separate noise-level meter or accent-sensitive confidence cutoff. Stop waits for confirmed results. Final words survive service restarts; stalled sessions recover and stale callbacks are ignored. Hey Yogi also activates hands-free capture after the mic button is clicked.
+Ten simulated microphone/wake scenarios and all 14 app regression groups passed. Physical spoken audio was not tested. Recognition language remains English (India); the proposed automatic multilingual feature is not included.
+
+
+COLOR SCHEME EDITOR — 31 October 2026
+Settings > Appearance > Color scheme offers live accent, background, panel, text, and face-dot color pickers and hex fields. Original, Ice, Mint, Amber, and Violet presets are included. Palettes save automatically and separately for light/dark mode. Reset affects only the current mode. The editor flags low text contrast and remains legible for recovery. Seven browser checks passed, including persistence, invalid hex input, theme isolation, reset, color-picker changes, and phone layouts.
+
+
+ADDITIONAL ANIMATIONS — 31 October 2026
+Section entrances now use staggered, interruptible transitions. New messages ease in; send icons bounce subtly and buttons press down. The face has listening waves, work/search orbits, an image-creation orbit, and a completion pulse. Dialogs and composer focus have gentle transitions. New effects use the current color palette, stop or pause when inactive/hidden, and respect app/OS reduced motion. Seven browser checks passed for navigation, activity phases, reduced motion, duplicate-send protection, and phone overflow.
+
+
+AUTOMATIC DEVELOPMENT SKILL LIBRARY — 31 October 2026
+YOGI now includes 500 pinned GitHub skills (178 frontend, 322 backend/development) and 2,136 instruction/support/license files. Starting YOGI installs the bundled offline snapshot into workspace/.agents/skills before Codex starts. Subsequent launches verify and reuse those files; missing managed files are repaired, while user changes or conflicting folders are preserved and reported. Installation does not execute skill scripts, install package dependencies, or change global Codex skills. Settings includes a searchable skill browser with source links. The backend can find and read relevant skills on demand. See SKILL-CATALOG.md for all 500 names and source commits.
+Checks passed: eight installer checks, six browser checks, four bridge checks, 14 existing app regression groups, and native Codex discovery of all 500 skills with zero parsing errors.
+
+AUTOMATIC SKILL SELECTION — 31 October 2026
+Before each development request, YOGI matches the actual user message to the installed catalog and automatically loads up to two relevant skill documents within a bounded text budget. Short follow-ups can use recent project context. The selection is refreshed on every turn, including reused conversations. Casual chat does not trigger development guidance, unrelated platforms are filtered, and explicit requests without skills are honored. The model can search/read further specialist references when needed. Startup still does not execute third-party skill scripts or install external dependencies. Eight automatic-routing and mocked-bridge checks passed without model calls.
+
+ANIMATION SKILL EXTENSION — 31 October 2026
+The library now has 750 skills: the original 500 plus eight official GSAP skills and 242 original YOGI animation recipes. The new Animation filter labels custom recipes separately from GitHub imports and links API references accurately. The installer preserves unchanged original skill content when adopting the new catalog version. Animation requests automatically load focused component recipes or GSAP guidance. The recipes cover 24 UI motion families plus accessibility/performance audits; their standalone probes demonstrate the animation primitive, not a full production component. See ANIMATION-SKILLS.md for all additions. All 750 were recognized by native Codex with zero parsing errors.

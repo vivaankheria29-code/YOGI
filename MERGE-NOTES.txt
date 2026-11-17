@@ -1,0 +1,9 @@
+YOGI — PORTABLE DESKTOP EDITION
+
+Renamed from SOPHIA to YOGI throughout the interface, assistant identity,
+voice introduction, accessible labels, launchers and setup instructions.
+Creator credit remains Vivaan Kheria. Existing conversation storage keys
+are retained. The face, red accents, layout and features are unchanged.
+
+Extract the whole ZIP and run START YOGI.cmd on Windows,
+Start YOGI.command on macOS, or Start YOGI.sh on Linux.
