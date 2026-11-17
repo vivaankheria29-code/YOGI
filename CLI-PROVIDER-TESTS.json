@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-17",
+  "checks": [
+    "14 unique presets; settings validation and persistence",
+    "Windows npm wrappers resolve to Node; unsupported shell wrappers rejected",
+    "Provider event decoding preserves split UTF-8, avoids duplicate snapshots and excludes tool/reasoning payloads",
+    "All 13 external adapters spawn real fixture subprocesses, return one final answer and clean prompt files; no shell interpolation",
+    "Nonzero exit, cancellation, timeout and prompt cleanup without leaking diagnostics",
+    "Workspace mode never silently grants an external CLI unrestricted access",
+    "Large prompts avoid Windows argument limits and model override is an argument, not a command",
+    "Provider switching resets execution state, preserves explicit model settings and never claims a version test authenticates",
+    "Native Codex authentication changes from signed-out to signed-in without restarting YOGI",
+    "Native Codex thread creation still supports its tools and receives model override"
+  ],
+  "scope": "Fixture subprocesses and parser tests; no paid AI requests; external-provider accounts and installed versions not live-tested."
+}

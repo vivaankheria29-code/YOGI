@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "project": {
+    "name": "yogi-console",
+    "productType": "Local desktop AI assistant",
+    "stack": [
+      "Vanilla JavaScript",
+      "CSS",
+      "Node.js"
+    ]
+  },
+  "sources": {
+    "tokens": [
+      "public/style.css"
+    ],
+    "components": [],
+    "assets": [],
+    "instructions": []
+  },
+  "design": {
+    "colorMode": "Themeable dark/light",
+    "colors": {},
+    "typography": {},
+    "spacing": {},
+    "radius": {},
+    "shadows": {},
+    "motion": {},
+    "density": "unknown"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": [
+      "Native labelled select",
+      "Existing setting rows",
+      "Native details disclosure"
+    ],
+    "patterns": []
+  },
+  "constraints": {
+    "must": [],
+    "avoid": []
+  },
+  "decisions": [
+    "Retain Nothing-style black/red UI and existing Core, Glass and Marigold themes.",
+    "Use an accessible native select for 14 CLI choices and reuse existing settings controls."
+  ],
+  "evidence": [],
+  "generatedAt": "2026-11-17T16:22:30.741Z"
+}

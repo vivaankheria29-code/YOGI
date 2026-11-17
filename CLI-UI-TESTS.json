@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-17",
+  "checks": [
+    "All 14 providers render in real settings with selected CLI status",
+    "Version probe works without claiming authenticated model access",
+    "CLI executable and model persist after reload",
+    "Provider changes keep separate drafts and block testing unsaved choices",
+    "Actual server rejects invalid CLI settings and cross-origin mutation",
+    "Real chat route reaches selected external CLI and returns assistant text plus done",
+    "Automatic skill selection remains active through the external CLI chat route",
+    "Engine form fits phone width across all three themes",
+    "Missing CLI leaves the app and engine settings usable",
+    "No browser JavaScript errors"
+  ],
+  "scope": "Real HTTP routes and browser UI against isolated fixture CLI; no external AI calls."
+}

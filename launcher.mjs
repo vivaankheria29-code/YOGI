@@ -5,7 +5,8 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import net from 'node:net';
-import {resolveCodex,resolveChrome} from './runtime-locator.mjs';
+import {resolveChrome} from './runtime-locator.mjs';
+import {readEngine,locateCLI,CLI_PROVIDERS} from './cli-providers.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 const instanceId=createHash('sha256').update(realpathSync(root)).digest('hex').slice(0,24);
@@ -31,26 +32,18 @@ async function main(){
     let previous;try{previous=JSON.parse(readFileSync(path.join(root,'work/launcher.json'),'utf8')).port;}catch{}
     for(const candidate of [...new Set([previous,Number(process.env.PORT||8341)].filter(p=>Number.isInteger(p)&&p>=1024&&p<=65535))]){
       const running=await statusAt(candidate);
-      if(running?.appId==='yogi'&&running.instanceId===instanceId&&running.connected){
+      if(running?.appId==='yogi'&&running.instanceId===instanceId){
         const url=`http://localhost:${candidate}/`;console.log('Already running: '+url);
         if(!options.has('--no-browser'))await launchBrowser(resolveChrome(),url);return;
       }
     }
   }
-  const codex=resolveCodex(),chrome=resolveChrome();
-  const version=spawnSync(codex.command,[...codex.args,'--version'],{encoding:'utf8',windowsHide:true,timeout:10000});
-  if(version.status!==0)throw new Error('Codex was located but could not run. Open Codex once and try again.');
-  if(options.has('--diagnose')){
-    console.log(JSON.stringify({node:process.version,codex:codex.path,codexVersion:version.stdout.trim(),chrome:chrome||'default browser fallback',folder:root},null,2));return;
-  }
+  let settings;try{settings=readEngine(root);}catch{settings={id:'codex',executable:'',model:''};}
+  const chrome=resolveChrome(),preset=CLI_PROVIDERS.find(p=>p.id===settings.id);let cli=null;
+  try{cli=await locateCLI(settings);}catch{console.log(preset.name+' is not installed yet. Choose or configure a CLI in YOGI Settings → Engine.');}
+  if(options.has('--diagnose')){console.log(JSON.stringify({node:process.version,engine:settings.id,executable:cli?.path||null,chrome:chrome||'default browser fallback',folder:root},null,2));return;}
   console.log('YOGI · starting your local assistant');
-  console.log('Codex detected: '+codex.path);
-  const auth=spawnSync(codex.command,[...codex.args,'login','status'],{encoding:'utf8',windowsHide:true,timeout:15000});
-  if(auth.status!==0){
-    if(options.has('--no-login'))throw new Error('Sign in to Codex, then launch again.');
-    console.log('Codex needs your sign-in. Complete the normal Codex login below.');
-    await new Promise((resolve,reject)=>{const child=spawn(codex.command,[...codex.args,'login'],{stdio:'inherit',windowsHide:false});child.once('error',reject);child.once('exit',code=>code===0?resolve():reject(new Error('Codex login was not completed.')));});
-  }
+  if(cli)console.log(preset.name+' detected: '+cli.path);
   mkdirSync(path.join(root,'work'),{recursive:true});
   let requested=Number(process.env.PORT||8341);
   if(!Number.isInteger(requested)||requested<1024||requested>65525)throw new Error('PORT must be a number between 1024 and 65525.');
@@ -58,14 +51,14 @@ async function main(){
   let port,existing=false;
   for(const candidate of [...new Set([previousPort,...Array.from({length:10},(_,i)=>requested+i)].filter(p=>Number.isInteger(p)&&p>=1024&&p<=65535))]){
     const status=await statusAt(candidate);
-    if(status?.appId==='yogi'&&status.instanceId===instanceId&&status.connected){port=candidate;existing=true;break;}
+    if(status?.appId==='yogi'&&status.instanceId===instanceId){port=candidate;existing=true;break;}
     if(await freePort(candidate)){port=candidate;break;}
   }
   if(!port)throw new Error('No free local port was found. Close an older instance or set PORT.');
   if(!existing){
     const stdout=openSync(path.join(root,'work/server.log'),'a'),stderr=openSync(path.join(root,'work/server-error.log'),'a');
     const entry=existsSync(path.join(root,'server.bundle.mjs'))?'server.bundle.mjs':'server.mjs';
-    const child=spawn(process.execPath,[path.join(root,entry)],{cwd:root,env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+(process.env.PATH||''),PORT:String(port),YOGI_CODEX_PATH:codex.path,JANMATE_CODEX_PATH:codex.path},detached:true,windowsHide:true,stdio:['ignore',stdout,stderr]});
+    const child=spawn(process.execPath,[path.join(root,entry)],{cwd:root,env:{...process.env,PATH:path.dirname(process.execPath)+path.delimiter+(process.env.PATH||''),PORT:String(port),...(settings.id==='codex'&&cli?{YOGI_CODEX_PATH:cli.path}: {})},detached:true,windowsHide:true,stdio:['ignore',stdout,stderr]});
     await new Promise((resolve,reject)=>{child.once('error',reject);child.once('spawn',resolve);});
     closeSync(stdout);closeSync(stderr);child.unref();
     writeFileSync(path.join(root,'work/server.pid'),String(child.pid));

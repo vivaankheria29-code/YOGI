@@ -1,0 +1,15 @@
+.engine-setting{align-items:flex-start}
+.engine-intro{flex:1;min-width:0}
+.engine-intro a{display:block;margin:14px 0;color:var(--ink);text-underline-offset:4px;font-size:14px;overflow-wrap:anywhere}
+.engine-form{width:min(100%,440px);min-width:0}
+.engine-form>.field-label:first-child{margin-top:0}
+.engine-form input[type=text]{background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px;width:100%;min-height:44px;font:inherit;box-sizing:border-box}
+.engine-form select{color:var(--ink);border:1px solid var(--line)}
+.engine-form details{margin:16px 0}
+.engine-form summary{cursor:pointer;min-height:32px;font-size:14px}
+.engine-form input:focus-visible,.engine-form select:focus-visible,.engine-form summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.engine-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.engine-actions button+button{background:var(--surface-3);color:var(--ink)}
+#engineFeedback{min-height:2.5em;overflow-wrap:anywhere}
+#engineFeedback[data-error=true]{color:var(--accent)}
+@media(max-width:650px){.engine-setting{flex-direction:column;gap:20px}.engine-form{width:100%}.engine-actions button{flex:1}.engine-intro{width:100%}}

@@ -6,7 +6,8 @@ Created by Vivaan Kheria
 2. On Windows, double-click START YOGI.cmd.
    On macOS, double-click Start YOGI.command.
    On Linux, run Start YOGI.sh (choose Run/Execute in your file manager).
-3. Codex is detected automatically. Complete Codex sign-in if prompted.
+3. Open Settings > Your AI engine. Choose and sign in to your installed CLI.
+   Codex is the default; 13 alternatives are available. See CLI-PROVIDERS.md.
 4. The server starts and opens Chrome. Clicking Start again reuses the same
    running copy. An occupied port is skipped automatically.
 
@@ -44,10 +45,10 @@ OPTIONAL ELEVENLABS VOICE
 Copy .env.example to .env in this folder and add YOUR ElevenLabs key.
 No API keys, sign-in tokens, private chats, uploaded files, generated
 projects, or runtime logs from the original computer are included.
-The assistant chat itself uses the device's Codex sign-in.
+The assistant chat uses the selected CLI account on this device.
 
 DESKTOP / MOBILE LIMIT
-This package runs a local Node server and Codex. It is not an Android/iOS
+This package runs a local Node server and a locally installed AI CLI. It is not an Android/iOS
 app and cannot run on phones or Chromebooks without an appropriate desktop
 Linux environment. macOS/Linux launch files may require Execute permission
 or an OS trust confirmation. In a terminal: sh 'Start YOGI.command'

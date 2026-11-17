@@ -10,7 +10,7 @@ Download **YOGI-Portable.zip** from [Releases](https://github.com/vivaankheria29
 - macOS: `Start YOGI.command`
 - Linux: `sh 'Start YOGI.sh'`
 
-YOGI uses an installed Node.js 22+ or downloads a verified portable runtime. Sign in to a compatible Codex desktop app or CLI on your own computer. Each computer uses its own account and connected services. Chrome is recommended for the existing speech-recognition integration. Windows has been tested; macOS and Linux launchers are supplied but have not been executed here.
+YOGI uses an installed Node.js 22+ or downloads a verified portable runtime. Choose a CLI in Settings → Your AI engine and sign in to it on your own computer. Codex remains the default, with 13 alternative headless adapters; see [CLI providers](CLI-PROVIDERS.md). Each computer uses its own account and connected services. Chrome is recommended for the existing speech-recognition integration. Windows has been tested; macOS and Linux launchers are supplied but have not been executed here.
 
 The server listens on loopback only. This is a desktop app, not a static GitHub Pages site or a native phone app. See [START HERE.txt](START%20HERE.txt) for setup, diagnostics and supported runtime targets.
 
@@ -25,7 +25,7 @@ The server listens on loopback only. This is a desktop app, not a static GitHub 
 
 ## Accounts, permissions and data
 
-The AI backend uses the computer's Codex session and configured model; no model account or subscription is bundled. Optional ElevenLabs voice uses your own key in `.env`, copied from `.env.example`. Spotify setup is documented in [SPOTIFY-SETUP.md](SPOTIFY-SETUP.md).
+The AI backend uses the selected installed CLI and its configured model. No account, subscription or CLI installation is bundled. Codex retains its native app/tool features; alternative adapters have the capability limits documented in CLI-PROVIDERS.md. Optional ElevenLabs voice uses your own key in `.env`, copied from `.env.example`. Spotify setup is documented in [SPOTIFY-SETUP.md](SPOTIFY-SETUP.md).
 
 YOGI currently defaults to full local tool access. Review Settings → Permissions and choose workspace-only mode if desired. Browser microphone/screen sharing and external-service consent remain controlled by their providers. Do not expose the local server directly to the internet.
 

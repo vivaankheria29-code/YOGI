@@ -1,3 +1,4 @@
+import {initEngineSettings} from './engine-settings.js';
 import {initFileWorkspace} from './file-workspace.js';
 import {initMusicVibe} from './music-vibe.js';
 import {initSpotify} from './spotify.js';
@@ -212,7 +213,7 @@ function setView(next) {
   document.querySelectorAll('.tab').forEach(t => t.dataset.view === next ? t.setAttribute('aria-current', 'page') : t.removeAttribute('aria-current'));
   if (next === 'music') music.refresh();
   if (next === 'apps') pluginPanel.load();
-  if (next === 'settings') {refreshSavedFiles();refreshSkillLibrary();}
+  if (next === 'settings') {refreshSavedFiles();refreshSkillLibrary();engineSettings.refresh();}
   if (next === 'tasks') $('#taskInput').focus();
   if (gsap && !reduced()) gsap.fromTo($(PANELS[next]), {opacity: 0, y: 8}, {opacity: 1, y: 0, duration: .3, ease: 'power3.out'});
 }
@@ -652,7 +653,7 @@ $('#previewExpression').onclick=()=>{const name=$('#expressionChoice').value;if(
 $('#voiceEngine').onchange = () => { prefs.voiceEngine = $('#voiceEngine').value; voice.fallback = false; savePrefs(); };
 $('#reconnectEngine').onclick = async () => {
   const button=$('#reconnectEngine');button.disabled=true;
-  try {const response=await fetch('/api/reconnect',{method:'POST'});const data=await response.json();if(!response.ok)throw new Error(data.error);await status();toast(data.connected?'Engine reconnected.':'Sign in to Codex, then press Reconnect again.');}catch(error){toast(error.message);}finally{button.disabled=false;}
+  try {const response=await fetch('/api/reconnect',{method:'POST'});const data=await response.json();if(!response.ok)throw new Error(data.error);await status();toast(data.connected?'Engine reconnected.':'Check your selected CLI in Settings, then reconnect.');}catch(error){toast(error.message);}finally{button.disabled=false;}
 };
 async function refreshSavedFiles() {
   const box=$('#savedFiles');box.replaceChildren();
@@ -983,13 +984,14 @@ function greet() {
   const part = hour < 5 ? 'Hello' : hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   $('#greeting').textContent = `${part}${userName ? ', ' + userName : ''}`;$('#coreGreeting').textContent=`At your service${userName?', '+userName:''}.`;
 }
+const engineSettings=initEngineSettings({onChange:async()=>{pluginPanel.loaded=false;await pluginPanel.load(true);await status();},isBusy:()=>busy});
 async function status() {
   try {
     const response = await fetch('/api/status'); if (!response.ok) throw new Error();
     const data = await response.json(); connected = !!data.connected;showAccessMode(data.access);
     $('#connState').className = 'conn ' + (connected ? 'on' : 'off');
-    $('#connText').textContent = connected ? 'Online' : 'Sign-in needed';
-    $('#settingsStatus').textContent = connected ? 'Connected and ready.' : 'Sign in to Codex on this computer, then press Reconnect.';
+    $('#connText').textContent = connected ? (data.engine?.auth==='unknown'?'CLI found':'Online') : 'Setup needed';
+    $('#settingsStatus').textContent = data.engine ? `${data.engine.name} · ${data.engine.model||'CLI default model'}. ${data.engine.detail||'Connected and ready.'}` : (connected ? 'Connected and ready.' : 'Choose and sign in to a CLI, then reconnect.');
     elevenLabsReady = !!data.voice?.configured;
     $('#voiceStatus').textContent = elevenLabsReady ? 'ElevenLabs key loaded. YOGI will use the ElevenLabs voice.' : 'No ElevenLabs key yet. YOGI will use the built-in voice until you add one.';
   } catch {

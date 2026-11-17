@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/ui-marigold.css">
 <link rel="stylesheet" href="/spotify.css">
 <link rel="stylesheet" href="/file-workspace.css">
+<link rel="stylesheet" href="/engine-settings.css">
 <script>
 // Apply the saved look before the first paint, so there is no flash of the wrong interface.
 try{const p=JSON.parse(localStorage.getItem('gigga.preferences')||'{}');const ui=['core','glass','marigold'].includes(p.ui)?p.ui:'core';document.documentElement.dataset.ui=ui;document.documentElement.dataset.theme=p.theme==='light'?'light':'dark';}catch{}
@@ -237,7 +238,12 @@ try{const p=JSON.parse(localStorage.getItem('gigga.preferences')||'{}');const ui
 
     <section class="panel" id="settingsPanel" aria-labelledby="settingsTitle" hidden>
       <div class="panel-head"><h2 id="settingsTitle">Settings</h2></div>
-      <div class="setting"><div><h3>Engine</h3><p id="settingsStatus">Checking…</p></div><button id="reconnectEngine" type="button">Reconnect</button></div>
+      <div class="setting engine-setting"><div class="engine-intro"><h3>Your AI engine</h3><p id="settingsStatus" role="status">Checking…</p><p class="field-note">Choose the CLI installed on this computer. Your account and model stay with that CLI.</p><a id="engineDocs" href="https://developers.openai.com/codex/cli/" target="_blank" rel="noopener noreferrer">Installation &amp; sign-in guide ↗</a><button id="reconnectEngine" type="button">Reconnect</button></div>
+        <form id="engineForm" class="engine-form"><label class="field-label" for="engineProvider">CLI provider</label><select id="engineProvider" required><option value="codex">Codex</option></select>
+          <label class="field-label" for="engineModel">Model <span class="field-note">optional</span></label><input id="engineModel" type="text" maxlength="160" placeholder="Use the CLI’s default model" autocomplete="off" spellcheck="false"><p class="field-note">Use a model ID supported by your CLI account. Leave blank to keep its default.</p>
+          <details><summary>Executable location</summary><label class="field-label" for="engineExecutable">Full executable path <span class="field-note">optional</span></label><input id="engineExecutable" type="text" maxlength="1024" placeholder="Auto-detect from PATH" autocomplete="off" spellcheck="false"><p class="field-note">Use a native executable or JavaScript entry point. Do not enter a shell command, flags or credentials.</p></details>
+          <p id="engineCapabilities" class="field-note"></p><p id="engineFeedback" class="field-note" role="status" aria-live="polite"></p><div class="engine-actions"><button id="saveEngine" type="submit">Save engine</button><button id="testEngine" type="button">Test installation</button></div>
+        </form></div>
       <div class="setting" id="accessSetting">
         <div><h3>Permissions</h3><p id="accessModeStatus" role="status">Full access · local approval prompts are off.</p><p class="field-note" id="accessModeHelp">Full access allows local file reads and writes, commands and network access using your Windows account. It applies to YOGI’s engine; browser microphone/screen sharing, service sign-ins and email-send confirmations still apply.</p></div>
         <div class="setting-actions"><label class="field-label" for="accessMode">YOGI access</label><select id="accessMode" aria-describedby="accessModeHelp"><option value="full">Full access · no local prompts</option><option value="workspace">Workspace · ask for extra access</option></select></div>

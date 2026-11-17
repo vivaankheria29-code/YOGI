@@ -28,7 +28,7 @@ export class PluginPanel {
     try{
       const response=await fetch('/api/plugins'+(refresh?'?refresh=true':''));const data=await response.json();if(!response.ok)throw new Error(data.error);
       const ready=data.apps.filter(a=>a.callable).length;
-      $('#pluginSummary').textContent=`${ready} app${ready===1?'':'s'} ready · ${data.localPlugins.filter(p=>p.enabled).length} skill bundles installed`;
+      $('#pluginSummary').textContent=data.unsupported?data.message:`${ready} app${ready===1?'':'s'} ready · ${data.localPlugins.filter(p=>p.enabled).length} skill bundles installed`;
       $('#pluginCount').textContent=ready;$('#pluginGrid').replaceChildren();$('#localPluginList').replaceChildren();
       this.apps=[...data.apps].sort((a,b)=>Number(b.callable)-Number(a.callable)||a.name.localeCompare(b.name));
       this.renderApps();
