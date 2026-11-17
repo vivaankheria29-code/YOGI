@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-17",
+  "checks": [
+    "UI saves Codex plus two Claude models without replacing either connection",
+    "UI links an existing shared folder and saves a brief without copying or replacing files",
+    "Codex native thread executes in the linked project folder with the selected model",
+    "Claude in the same chat sees Codex’s disk change and journal handoff",
+    "Returning to the reused Codex session receives Claude’s intervening work",
+    "Auto chooses the user-assigned review model and displays its route",
+    "Chat history, project and model selection survive reload with answer attribution",
+    "Composer model/project controls stay usable on phones in every theme",
+    "Completed turns persist an attributed project handoff; browser has no script errors"
+  ],
+  "scope": "Real HTTP/browser and fixture Codex app-server + Claude subprocesses; no paid or live provider model calls."
+}

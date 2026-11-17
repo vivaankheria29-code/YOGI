@@ -6,7 +6,8 @@
     "start": "node launcher.mjs",
     "check": "node --check server.mjs && node --check codex-bridge.mjs && node --check uploads.mjs && node --check public/app.js && node --check identity.mjs",
     "test:cli": "node tools/test-cli-providers.mjs",
-    "verify": "node tools/verify-package.mjs"
+    "verify": "node tools/verify-package.mjs",
+    "test:projects": "node tools/test-shared-projects.mjs"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.73.0"

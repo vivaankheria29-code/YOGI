@@ -43,12 +43,12 @@ export function approvalAnswer(message,data){
   throw new Error('Unsupported approval.');
 }
 export class CodexBridge {
-  constructor(exe,cwd,{model=''}={}){this.model=model;this.exe=typeof exe==='string'?exe:exe.command;this.prefix=typeof exe==='string'?[]:exe.args||[];this.cwd=cwd;this.pending=new Map();this.approvals=new Map();this.nextId=0;this.active=null;this.child=null;this.readyPromise=null;this.cachedCatalog=null;this.threads=new Map();this.images=createImageCollector(cwd);}
+  constructor(exe,cwd,{model='',projectCwd=cwd}={}){this.projectCwd=projectCwd;this.model=model;this.exe=typeof exe==='string'?exe:exe.command;this.prefix=typeof exe==='string'?[]:exe.args||[];this.cwd=cwd;this.pending=new Map();this.approvals=new Map();this.nextId=0;this.active=null;this.child=null;this.readyPromise=null;this.cachedCatalog=null;this.threads=new Map();this.images=createImageCollector(cwd);}
   write(message){if(this.child?.stdin.writable)this.child.stdin.write(JSON.stringify(message)+'\n');}
   async ready(){
     if(this.readyPromise)return this.readyPromise;
     this.readyPromise=(async()=>{
-      this.child=spawn(this.exe,[...this.prefix,'app-server','--listen','stdio://','--enable','apps'],{cwd:this.cwd,stdio:['pipe','pipe','pipe'],windowsHide:true});
+      this.child=spawn(this.exe,[...this.prefix,'app-server','--listen','stdio://','--enable','apps'],{cwd:this.projectCwd,stdio:['pipe','pipe','pipe'],windowsHide:true});
       this.child.stderr.on('data',()=>{});this.child.stdin.on('error',()=>{});
       const lines=readline.createInterface({input:this.child.stdout});
       lines.on('line',line=>{let msg;try{msg=JSON.parse(line);}catch{return;}this.handle(msg);});
@@ -148,7 +148,7 @@ export class CodexBridge {
     const reuse=!!cached&&cached.web===web&&cached.plugins===plugins&&cached.userName===userName&&cached.accessMode===accessMode;
     let threadId=reuse?cached.threadId:null;
     if(!reuse){
-      const thread=await this.request('thread/start',{...(this.model?{model:this.model}:{}),cwd:this.cwd,ephemeral:true,...policy,dynamicTools:[artifactTool,developmentSkillTool,...(plugins?[emailTool]:[])],developerInstructions:instructions+accessInstructions+' For listing, reading text, inspecting or visually verifying saved files, use jarvis_inspect_file directly without the shell. For user-requested email attachments, use jarvis_email_local_files, which reads bytes server-side and asks for a one-time send approval. Do not use a shell or cloud file reader to load local attachments, or copy base64 into chat. Do not send download links as substitutes for attachments. If the selected files exceed its size limit, explain how many files fit and ask before splitting into multiple messages or generating smaller copies.',config:{web_search:web?'live':'disabled','features.apps':plugins}});
+      const thread=await this.request('thread/start',{...(this.model?{model:this.model}:{}),cwd:this.projectCwd,ephemeral:true,...policy,dynamicTools:[artifactTool,developmentSkillTool,...(plugins?[emailTool]:[])],developerInstructions:instructions+` The active project directory is ${JSON.stringify(this.projectCwd)}. Use that directory for project commands and edits; do not create a second project in the artifact workspace. The separate YOGI attachment/artifact workspace is ${JSON.stringify(this.cwd)}. Project handoffs attached to each turn describe changes by other models; inspect current files even when resuming a cached thread.`+accessInstructions+' For listing, reading text, inspecting or visually verifying saved files, use jarvis_inspect_file directly without the shell. For user-requested email attachments, use jarvis_email_local_files, which reads bytes server-side and asks for a one-time send approval. Do not use a shell or cloud file reader to load local attachments, or copy base64 into chat. Do not send download links as substitutes for attachments. If the selected files exceed its size limit, explain how many files fit and ask before splitting into multiple messages or generating smaller copies.',config:{web_search:web?'live':'disabled','features.apps':plugins}});
       threadId=thread.thread.id;
       if(cacheKey){this.threads.delete(cacheKey);if(this.threads.size>=24)this.threads.delete(this.threads.keys().next().value);this.threads.set(cacheKey,{threadId,web,plugins,userName,accessMode});}
     }

@@ -27,7 +27,7 @@ These are adapters to the documented headless interfaces, not bundled installati
 
 Leave the model field blank to use the selected CLI’s configuration. Otherwise enter a model ID available through that CLI, not a shell command. Model IDs are provider-specific and access is checked by the CLI at run time. Configure Amp’s model in Amp itself; YOGI disables the override for that provider. Continue accepts its configured model slug. An executable path is a local file location, never a command plus arguments.
 
-The selected ID, executable location and model ID are saved in local `data/engine.json`. They are excluded from Git and portable releases. The provider choice is per YOGI installation, shared by its browser sessions. Changing it affects the next message and is rejected during an active reply. UI drafts for different providers remain separate while the page is open; only the saved selection persists across reloads.
+The selected ID, executable location and model ID are saved in local `data/engine.json`. They are excluded from Git and portable releases. The app-default provider choice is per YOGI installation, shared by its browser sessions. Saved chat connections and shared projects can override it per turn; see SHARED-PROJECTS.md. Changing it affects the next message and is rejected during an active reply. UI drafts for different providers remain separate while the page is open; only the saved selection persists across reloads.
 
 ## Capability boundaries
 

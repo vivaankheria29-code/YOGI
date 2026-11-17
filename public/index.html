@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="/spotify.css">
 <link rel="stylesheet" href="/file-workspace.css">
 <link rel="stylesheet" href="/engine-settings.css">
+<link rel="stylesheet" href="/collaboration.css">
 <script>
 // Apply the saved look before the first paint, so there is no flash of the wrong interface.
 try{const p=JSON.parse(localStorage.getItem('gigga.preferences')||'{}');const ui=['core','glass','marigold'].includes(p.ui)?p.ui:'core';document.documentElement.dataset.ui=ui;document.documentElement.dataset.theme=p.theme==='light'?'light':'dark';}catch{}
@@ -152,6 +153,11 @@ try{const p=JSON.parse(localStorage.getItem('gigga.preferences')||'{}');const ui
         <ol class="messages" id="messages" aria-live="polite" aria-relevant="additions"></ol>
       </div>
 
+      <div class="chat-collaboration" aria-label="Project and model connection">
+        <label for="chatProject">Project</label><select id="chatProject"><option value="workspace">YOGI workspace</option></select>
+        <label for="chatModel">Model</label><select id="chatModel"><option value="">App default</option></select><button type="button" id="manageShared">Manage</button>
+        <p id="chatHandoff" aria-live="polite">Models share the selected project’s files and handoffs.</p>
+      </div>
       <form class="composer" id="chatForm">
         <div class="tray" id="tray" hidden aria-label="Attached files"></div>
         <label class="sr-only" for="prompt">Message YOGI</label>
@@ -238,12 +244,28 @@ try{const p=JSON.parse(localStorage.getItem('gigga.preferences')||'{}');const ui
 
     <section class="panel" id="settingsPanel" aria-labelledby="settingsTitle" hidden>
       <div class="panel-head"><h2 id="settingsTitle">Settings</h2></div>
-      <div class="setting engine-setting"><div class="engine-intro"><h3>Your AI engine</h3><p id="settingsStatus" role="status">Checking…</p><p class="field-note">Choose the CLI installed on this computer. Your account and model stay with that CLI.</p><a id="engineDocs" href="https://developers.openai.com/codex/cli/" target="_blank" rel="noopener noreferrer">Installation &amp; sign-in guide ↗</a><button id="reconnectEngine" type="button">Reconnect</button></div>
+      <div class="setting engine-setting"><div class="engine-intro"><h3>App default engine</h3><p id="settingsStatus" role="status">Checking…</p><p class="field-note">Choose the CLI installed on this computer. Your account and model stay with that CLI.</p><a id="engineDocs" href="https://developers.openai.com/codex/cli/" target="_blank" rel="noopener noreferrer">Installation &amp; sign-in guide ↗</a><button id="reconnectEngine" type="button">Reconnect</button></div>
         <form id="engineForm" class="engine-form"><label class="field-label" for="engineProvider">CLI provider</label><select id="engineProvider" required><option value="codex">Codex</option></select>
           <label class="field-label" for="engineModel">Model <span class="field-note">optional</span></label><input id="engineModel" type="text" maxlength="160" placeholder="Use the CLI’s default model" autocomplete="off" spellcheck="false"><p class="field-note">Use a model ID supported by your CLI account. Leave blank to keep its default.</p>
           <details><summary>Executable location</summary><label class="field-label" for="engineExecutable">Full executable path <span class="field-note">optional</span></label><input id="engineExecutable" type="text" maxlength="1024" placeholder="Auto-detect from PATH" autocomplete="off" spellcheck="false"><p class="field-note">Use a native executable or JavaScript entry point. Do not enter a shell command, flags or credentials.</p></details>
-          <p id="engineCapabilities" class="field-note"></p><p id="engineFeedback" class="field-note" role="status" aria-live="polite"></p><div class="engine-actions"><button id="saveEngine" type="submit">Save engine</button><button id="testEngine" type="button">Test installation</button></div>
+          <p id="engineCapabilities" class="field-note"></p><p id="engineFeedback" class="field-note" role="status" aria-live="polite"></p><div class="engine-actions"><button id="saveEngine" type="submit">Save app default</button><button id="testEngine" type="button">Test installation</button></div>
         </form></div>
+      <div class="setting shared-settings" id="sharedSettings">
+        <h3>Shared projects &amp; model connections</h3><p>Keep Codex, Claude or several models ready in the same chat. Each model gets the selected project’s brief and recent handoffs. One file-editing turn runs at a time.</p>
+        <div id="connectionList" aria-label="Saved model connections"></div>
+        <label class="field-label" for="connectionLabel">Connection name</label><input id="connectionLabel" type="text" maxlength="80" placeholder="For example: Codex builder or Claude reviewer" autocomplete="off">
+        <p class="field-note">Choose the CLI, model and executable in the engine form above. Save them here as a separate chat connection. You can save several models for the same CLI.</p>
+        <div class="engine-actions"><button type="button" id="saveConnection">Save chat connection</button><button type="button" id="newConnection">New connection</button></div>
+        <details><summary>Project folder &amp; shared brief</summary><form id="sharedProjectForm">
+          <label class="field-label" for="sharedProjectEdit">Project to edit</label><select id="sharedProjectEdit"><option value="">Create or link a project</option></select>
+          <label class="field-label" for="projectName">Project name</label><input id="projectName" type="text" maxlength="80" required>
+          <label class="field-label" for="projectFolder">Existing project folder <span class="field-note">optional</span></label><input id="projectFolder" type="text" maxlength="2048" placeholder="Absolute folder path, or leave blank for a new project" spellcheck="false"><p class="field-note">Every selected CLI works in this same folder. Linking an existing folder does not copy or replace its files. Folders outside YOGI require Full access.</p>
+          <label class="field-label" for="projectBrief">Shared brief</label><textarea id="projectBrief" maxlength="8000" placeholder="Goal, constraints, decisions, how to run tests, and what should happen next…"></textarea><button type="submit">Save project</button>
+        </form><p class="field-label">Latest handoff</p><div id="projectHandoff">Choose a project to view its latest handoff.</div></details>
+        <details><summary>Auto routing · your model choices</summary><p class="field-note">Auto uses these routes when you choose “Auto · my routes” beside the chat. It matches task words; it does not benchmark models or guarantee the best model.</p>
+          <div class="route-grid"><label for="route-fast">Quick questions<select id="route-fast"></select></label><label for="route-plan">Planning &amp; reasoning<select id="route-plan"></select></label><label for="route-code">Coding &amp; fixes<select id="route-code"></select></label><label for="route-review">Review &amp; checks<select id="route-review"></select></label></div><div class="engine-actions"><button type="button" id="saveRoutes">Save routes</button></div>
+        </details><p id="sharedFeedback" class="field-note" role="status" aria-live="polite"></p>
+      </div>
       <div class="setting" id="accessSetting">
         <div><h3>Permissions</h3><p id="accessModeStatus" role="status">Full access · local approval prompts are off.</p><p class="field-note" id="accessModeHelp">Full access allows local file reads and writes, commands and network access using your Windows account. It applies to YOGI’s engine; browser microphone/screen sharing, service sign-ins and email-send confirmations still apply.</p></div>
         <div class="setting-actions"><label class="field-label" for="accessMode">YOGI access</label><select id="accessMode" aria-describedby="accessModeHelp"><option value="full">Full access · no local prompts</option><option value="workspace">Workspace · ask for extra access</option></select></div>

@@ -23,6 +23,10 @@ The server listens on loopback only. This is a desktop app, not a static GitHub 
 - The 5,000 latest additions are a matrix of focused subject/task/delivery recipes: 3,000 video animation and 2,000 3D web animation. They are not 5,000 independent upstream projects or installed rendering engines. See [recipe methodology](ANIMATION-5000.md).
 - Automatic skill matching with bounded context; the newest recipes are stored separately and read on demand.
 
+## Shared projects and model connections
+
+Save several CLI/model connections in Settings, choose one shared project, and switch models beside the composer without starting a new chat. Each turn receives the brief, recent handoffs and current file inventory. Optional Auto mode uses your assigned quick/planning/coding/review routes. See [shared project setup](SHARED-PROJECTS.md).
+
 ## Accounts, permissions and data
 
 The AI backend uses the selected installed CLI and its configured model. No account, subscription or CLI installation is bundled. Codex retains its native app/tool features; alternative adapters have the capability limits documented in CLI-PROVIDERS.md. Optional ElevenLabs voice uses your own key in `.env`, copied from `.env.example`. Spotify setup is documented in [SPOTIFY-SETUP.md](SPOTIFY-SETUP.md).

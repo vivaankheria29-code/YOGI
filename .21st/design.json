@@ -42,7 +42,8 @@
   },
   "decisions": [
     "Retain Nothing-style black/red UI and existing Core, Glass and Marigold themes.",
-    "Use an accessible native select for 14 CLI choices and reuse existing settings controls."
+    "Use an accessible native select for 14 CLI choices and reuse existing settings controls.",
+    "Keep project and model native selects beside the persistent composer; show connection/model attribution on answers and reuse existing settings for saved connections."
   ],
   "evidence": [],
   "generatedAt": "2026-11-17T16:22:30.741Z"

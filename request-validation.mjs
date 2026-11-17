@@ -8,5 +8,6 @@ export function validateChatPayload(data) {
   if ((data.attachments || []).length > 10 || (data.attachments || []).some(id => typeof id !== 'string' || id.length > 80)) throw invalid('Invalid attachment list.');
   if(data.activeFile!=null&&(typeof data.activeFile!=='object'||Array.isArray(data.activeFile)||(data.activeFile.url!==undefined&&(typeof data.activeFile.url!=='string'||data.activeFile.url.length>2048))||(data.activeFile.id!==undefined&&(typeof data.activeFile.id!=='string'||data.activeFile.id.length>80))||(data.activeFile.chatId!==undefined&&(typeof data.activeFile.chatId!=='string'||data.activeFile.chatId.length>80))))throw invalid('Invalid open-file reference.');
   if(data.activeFileDirty!==undefined&&typeof data.activeFileDirty!=='boolean')throw invalid('Invalid editor state.');
+  for(const field of ['projectId','profileId'])if(data[field]!==undefined&&(typeof data[field]!=='string'||data[field].length>80))throw invalid('Invalid project or model connection.');
   return {...data, history: (data.history || []).slice(-80).map(x => ({role: x.role, text: x.text.slice(0,8000)})), tasks: (data.tasks || []).map(t => ({text: t.text.slice(0,1000), done: !!t.done}))};
 }

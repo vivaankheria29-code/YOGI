@@ -1,3 +1,4 @@
+import {initCollaboration} from './collaboration.js';
 import {initEngineSettings} from './engine-settings.js';
 import {initFileWorkspace} from './file-workspace.js';
 import {initMusicVibe} from './music-vibe.js';
@@ -213,7 +214,7 @@ function setView(next) {
   document.querySelectorAll('.tab').forEach(t => t.dataset.view === next ? t.setAttribute('aria-current', 'page') : t.removeAttribute('aria-current'));
   if (next === 'music') music.refresh();
   if (next === 'apps') pluginPanel.load();
-  if (next === 'settings') {refreshSavedFiles();refreshSkillLibrary();engineSettings.refresh();}
+  if (next === 'settings') {refreshSavedFiles();refreshSkillLibrary();engineSettings.refresh();collaboration.refresh();}
   if (next === 'tasks') $('#taskInput').focus();
   if (gsap && !reduced()) gsap.fromTo($(PANELS[next]), {opacity: 0, y: 8}, {opacity: 1, y: 0, duration: .3, ease: 'power3.out'});
 }
@@ -257,6 +258,7 @@ function messageNode(msg, seenImages, interactive = false) {
   shownMessages.add(msg);
   if (msg.role === 'board') li.classList.add('board');
   if (msg.role !== 'user') li.append(el('span', 'who', msg.role === 'error' ? 'Something went wrong' : msg.role === 'images' ? 'Pictures from Wikimedia Commons' : msg.role === 'generated' ? 'Image' : msg.role === 'board' ? 'Board' : 'YOGI'));
+  if(msg.role==='assistant'&&msg.engine)li.append(el('span','model-attribution',`${msg.engine.label} · ${msg.engine.model} · ${msg.engine.projectName}`));
   if (msg.attachments?.length) li.append(attachmentRow(msg.attachments));
   const bubble = el('div', 'bubble');
   if (msg.role === 'assistant') renderRich(bubble, msg.text, {onImage: openPreview, seen: seenImages, hideBoards: true});
@@ -351,7 +353,7 @@ updateSearchControls();
 
 // ---------- Busy state ----------
 function setBusy(value) {
-  busy = value;
+  busy = value;collaboration.setBusy(value);
   $('#stopResponse').hidden = !value; $('#send').hidden = value;
   for (const id of ['#attach', '#fileInput', '#workMode']) $(id).disabled = value;
   $('#composerStatus').textContent = value ? 'Working on it…' : '';
@@ -390,7 +392,7 @@ async function ask(raw) {
   lastStatus = ''; workPhase=selected.length?'reading':'thinking';completionState=null;completionStarted=0;drafts.clear(); spokenUpTo.clear();
   setBusy(true); renderMessages(); showWaiting();
   requestController = new AbortController();
-  let received = false, turnFailed = false, turnCanceled = false; const generated = []; let boardFen = null; const turnStart = messages.length;
+  let turnEngine=null;let received = false, turnFailed = false, turnCanceled = false; const generated = []; let boardFen = null; const turnStart = messages.length;
   try {
     const attachments = [];
     for (const item of selected) {
@@ -403,13 +405,14 @@ async function ask(raw) {
     }
     pendingFiles = []; renderTray();
     const response = await fetch('/api/chat', {method: 'POST', headers: {'Content-Type': 'application/json'}, signal: requestController.signal,
-      body: JSON.stringify({message, userName, history, tasks, chatId: currentChatId, mode: $('#workMode').value, attachments, activeFile:fileWorkspace.context(),activeFileDirty:fileWorkspace.dirty, web: webEnabled, images: imageMode})});
+      body: JSON.stringify({message, userName, history, tasks,...collaboration.payload(), chatId: currentChatId, mode: $('#workMode').value, attachments, activeFile:fileWorkspace.context(),activeFileDirty:fileWorkspace.dirty, web: webEnabled, images: imageMode})});
     if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.error || 'YOGI could not connect to her engine.'); }
     const reader = response.body.getReader(), decoder = new TextDecoder(); let pending = '';
     const consume = line => {
       if (!line.trim()) return;
       const e = JSON.parse(line);
-      if (e.type === 'draft') {
+      if(e.type==='engine'){turnEngine=e;collaboration.resolved(e);}
+      else if (e.type === 'draft') {
         workPhase='writing';
         hideWaiting(); $('#composerStatus').textContent = 'Writing…';
         drafts.set(e.itemId || 'stream', e.text || ''); scheduleDraftPaint(); speakProgress(e.itemId || 'stream', e.text || '');
@@ -420,7 +423,7 @@ async function ask(raw) {
         received = true; const key = e.itemId || 'stream';
         const hadDraft = draftNodes.has(key);
         drafts.delete(key); draftNodes.get(key)?.li.remove(); draftNodes.delete(key);
-        messages.push({role: 'assistant', text: e.text}); if (hadDraft) shownMessages.add(messages.at(-1)); save();
+        messages.push({role: 'assistant', text: e.text,...(turnEngine?{engine:turnEngine}:{})}); if (hadDraft) shownMessages.add(messages.at(-1)); save();
         const node = messageNode(messages.at(-1), new Set()); if (node) $('#messages').append(node);
         scrollThread(); speakProgress(key, e.text, true); workPhase='reasoning';
         if (busy) showWaiting(); // more may follow (tools, a second message)
@@ -542,14 +545,14 @@ function openChat(id) {
   if (busy) return toast('Stop or finish the current reply first.');
   const chat = chats.find(c => c.id === id); if (!chat) return;
   save(); currentChatId = id; messages = chat.messages || []; pendingFiles = []; $('#workMode').value = chat.mode || 'General';
-  save(); renderTray(); renderMessages(); setView('chat');
+  save(); collaboration.sync(); renderTray(); renderMessages(); setView('chat');
 }
 function newChat() {
   if (busy) return toast('Stop or finish the current reply first.');
   save(); voice.stop(); currentChatId = crypto.randomUUID();
   chats.unshift({id: currentChatId, title: 'New conversation', messages: [], mode: 'General', updatedAt: Date.now()});
   messages = []; pendingFiles = []; $('#workMode').value = 'General';
-  save(); renderTray(); renderMessages(); setView('chat'); $('#prompt').focus();
+  save(); collaboration.sync(); renderTray(); renderMessages(); setView('chat'); $('#prompt').focus();
 }
 $('#newChat').onclick = newChat; $('#newChat2').onclick = newChat;
 $('#workMode').value = chats.find(c => c.id === currentChatId)?.mode || 'General'; $('#workMode').onchange = save;
@@ -985,12 +988,13 @@ function greet() {
   $('#greeting').textContent = `${part}${userName ? ', ' + userName : ''}`;$('#coreGreeting').textContent=`At your service${userName?', '+userName:''}.`;
 }
 const engineSettings=initEngineSettings({onChange:async()=>{pluginPanel.loaded=false;await pluginPanel.load(true);await status();},isBusy:()=>busy});
+const collaboration=initCollaboration({getChat:()=>chats.find(c=>c.id===currentChatId),onSelection:value=>{const chat=chats.find(c=>c.id===currentChatId);if(chat){Object.assign(chat,value);save();status();}},isBusy:()=>busy,notify:toast,getEngineDraft:()=>engineSettings.value(),loadEngineDraft:p=>engineSettings.load(p)});
 async function status() {
   try {
-    const response = await fetch('/api/status'); if (!response.ok) throw new Error();
-    const data = await response.json(); connected = !!data.connected;showAccessMode(data.access);
+    const response = await fetch('/api/status?'+new URLSearchParams(collaboration.payload())); if (!response.ok) throw new Error();
+    const data = await response.json(); connected = !!(data.selectedConnection||data).connected;showAccessMode(data.access);
     $('#connState').className = 'conn ' + (connected ? 'on' : 'off');
-    $('#connText').textContent = connected ? (data.engine?.auth==='unknown'?'CLI found':'Online') : 'Setup needed';
+    $('#connText').textContent = data.selectedConnection?.auth==='route-on-send'?'Auto routes':connected?((data.selectedConnection||data.engine)?.auth==='unknown'?'CLI found':'Online'):'Setup needed';
     $('#settingsStatus').textContent = data.engine ? `${data.engine.name} · ${data.engine.model||'CLI default model'}. ${data.engine.detail||'Connected and ready.'}` : (connected ? 'Connected and ready.' : 'Choose and sign in to a CLI, then reconnect.');
     elevenLabsReady = !!data.voice?.configured;
     $('#voiceStatus').textContent = elevenLabsReady ? 'ElevenLabs key loaded. YOGI will use the ElevenLabs voice.' : 'No ElevenLabs key yet. YOGI will use the built-in voice until you add one.';

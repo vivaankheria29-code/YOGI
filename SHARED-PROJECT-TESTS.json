@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-17",
+  "checks": [
+    "Multiple CLI connections and multiple models from the same CLI persist independently",
+    "Automatic routing uses explicit user-assigned connections for quick, planning, coding and review tasks",
+    "Provider sessions are separate while execution directory and project identity stay shared",
+    "The next model gets the same disk files, shared brief and prior handoff without another project’s memory",
+    "Project handoffs and saved connections survive a server restart and are shared across linked chats",
+    "Handoffs are bounded and interrupted work is marked instead of reported as complete",
+    "Existing folders link without copying files; workspace-mode and disk-root boundaries are enforced",
+    "Removed connections invalidate their routes and cannot silently select another model"
+  ],
+  "scope": "Local state, routing, handoff and engine-session tests with fixture managers. No external AI calls."
+}

@@ -7,9 +7,9 @@ import {createImageCollector} from './generated-images.mjs';
 import {CLI_PROVIDERS,readEngine,saveEngine,validateEngine,locateCLI,capabilities} from './cli-providers.mjs';
 const exec=promisify(execFile);
 export class EngineManager {
-  constructor(root,cwd,{locate=locateCLI}={}){this.root=root;this.cwd=cwd;this.locate=locate;this.backend=null;this.threads=new Map();this.cached=null;this.pending=null;this.epoch=0;try{this.settings=readEngine(root);}catch{this.settings={id:'codex',executable:'',model:''};}}
+  constructor(root,cwd,{locate=locateCLI,projectCwd=cwd}={}){this.projectCwd=projectCwd;this.root=root;this.cwd=cwd;this.locate=locate;this.backend=null;this.threads=new Map();this.cached=null;this.pending=null;this.epoch=0;try{this.settings=readEngine(root);}catch{this.settings={id:'codex',executable:'',model:''};}}
   get images(){return this.backend?.images||(this.imageFallback??=createImageCollector(this.cwd));}
-  async ensure(){if(this.backend)return this.backend;const settings=this.settings,epoch=this.epoch;const executable=await this.locate(settings);if(epoch!==this.epoch)throw new Error('CLI changed; retry the request.');this.backend=settings.id==='codex'?new CodexBridge(executable,this.cwd,{model:settings.model}):new CLIBridge(executable,this.cwd,settings);this.threads=this.backend.threads;return this.backend;}
+  async ensure(){if(this.backend)return this.backend;const settings=this.settings,epoch=this.epoch;const executable=await this.locate(settings);if(epoch!==this.epoch)throw new Error('CLI changed; retry the request.');this.backend=settings.id==='codex'?new CodexBridge(executable,this.cwd,{model:settings.model,projectCwd:this.projectCwd}):new CLIBridge(executable,this.cwd,settings,{projectCwd:this.projectCwd});this.threads=this.backend.threads;return this.backend;}
   async status(force=false){
     if(!force&&this.cached&&Date.now()-this.cached.at<10000)return this.cached.value;if(this.pending)return this.pending;
     const settings=this.settings,preset=CLI_PROVIDERS.find(p=>p.id===settings.id),epoch=this.epoch;

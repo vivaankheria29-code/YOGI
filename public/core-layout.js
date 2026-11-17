@@ -9,7 +9,7 @@ const actions = document.createElement('div'); actions.className = 'composer-act
 actions.append($('#enableAudio'), $('#micInline'), $('#stopResponse'), $('#send')); $('.composer-row').append(actions);
 // The dock lives outside the panels, so switching views never moves it.
 const dock = document.createElement('div'); dock.className = 'dock'; dock.id = 'dock';
-dock.append($('#chatForm'), $('.composer-hint'));
+dock.append($('.chat-collaboration'), $('#chatForm'), $('.composer-hint'));
 $('.shell').append(dock);
 // Core view gets its own calm home in the middle area: greeting, live caption, ideas.
 const home = document.createElement('section'); home.className = 'panel core-panel'; home.id = 'corePanel'; home.setAttribute('aria-label', 'Home');

@@ -189,3 +189,6 @@ Before each development request, YOGI matches the actual user message to the ins
 
 ANIMATION SKILL EXTENSION — 31 October 2026
 The library now has 750 skills: the original 500 plus eight official GSAP skills and 242 original YOGI animation recipes. The new Animation filter labels custom recipes separately from GitHub imports and links API references accurately. The installer preserves unchanged original skill content when adopting the new catalog version. Animation requests automatically load focused component recipes or GSAP guidance. The recipes cover 24 UI motion families plus accessibility/performance audits; their standalone probes demonstrate the animation primitive, not a full production component. See ANIMATION-SKILLS.md for all additions. All 750 were recognized by native Codex with zero parsing errors.
+
+SHARED PROJECTS AND MODELS
+Save chat connections in Settings, choose a project and model beside the chat box, and switch CLIs without leaving the conversation. Project briefs and recent handoffs carry work between models. Auto uses your own quick/planning/coding/review assignments. See SHARED-PROJECTS.md for setup and limits.
