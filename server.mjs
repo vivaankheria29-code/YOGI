@@ -13,6 +13,7 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import {readVoiceConfig,voiceStatus,streamSpeech} from './tts.mjs';
 import {imageQuery,searchImages} from './web-tools.mjs';
+import {modelOptions,openCodeModels} from './model-catalog.mjs';
 import {SharedProjects} from './shared-projects.mjs';
 import {EngineManager} from './engine-manager.mjs';
 import {IMAGE_EXT} from './generated-images.mjs';
@@ -123,6 +124,13 @@ async function handleRequest(req,res) {
     const chunks=[];let size=0;for await(const chunk of req){size+=chunk.length;if(size>24000)return json(res,413,{error:'Project settings too large.'});chunks.push(chunk);}
     if(busy)return json(res,409,{error:'Finish the reply before changing connections or projects.'});
     try{const value=JSON.parse(Buffer.concat(chunks).toString('utf8'));return json(res,200,url.pathname==='/api/connections'?shared.saveProfile(value):url.pathname==='/api/projects'?shared.saveProject(value):shared.saveRoutes(value));}catch(error){return json(res,400,{error:error.message||'Invalid project settings.'});}
+  }
+  if(req.method==='GET'&&url.pathname==='/api/models'){
+    const providerId=url.searchParams.get('provider')||bridge.settings.id;
+    let live=null;
+    if(providerId==='codex'&&bridge.settings.id==='codex'&&!busy){try{const now=Date.now();if(!bridge.modelCatalog||now-bridge.modelCatalog.at>300000){const backend=await bridge.ensure();await backend.ready();const result=await backend.request('model/list',{limit:100},8000);bridge.modelCatalog={at:now,models:Array.isArray(result.data)?result.data:[]};}live=bridge.modelCatalog.models;}catch{}}
+    if(providerId==='opencode'&&!busy){try{const saved=bridge.settings.id==='opencode'?bridge.settings:shared.list().profiles.find(p=>p.id==='opencode');live=await openCodeModels({id:'opencode',model:'',executable:saved?.executable||''});}catch{}}
+    return json(res,200,modelOptions(providerId,{profiles:shared.list().profiles,selected:bridge.settings,live}));
   }
   if(req.method==='GET'&&url.pathname==='/api/settings/engine')return json(res,200,await bridge.options());
   if(req.method==='POST'&&url.pathname==='/api/settings/engine'){

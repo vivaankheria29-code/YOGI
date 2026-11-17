@@ -23,5 +23,5 @@ export class EngineManager {
   async catalog(force=false){if(this.settings.id!=='codex')return {apps:[],localPlugins:[],unsupported:true,message:'This panel is available with Codex. Other CLIs use their own integrations.'};return (await this.ensure()).catalog(force);}
   respond(id,data){if(!this.backend)throw new Error('No active CLI approval.');return this.backend.respond(id,data);}
   async run(options){return (await this.ensure()).run(options);}
-  close(){this.epoch++;this.backend?.close();this.backend=null;this.threads=new Map();this.cached=null;this.pending=null;}
+  close(){this.modelCatalog=null;this.epoch++;this.backend?.close();this.backend=null;this.threads=new Map();this.cached=null;this.pending=null;}
 }

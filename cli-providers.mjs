@@ -27,7 +27,7 @@ export function validateEngine(value){
   if(!CLI_PROVIDERS.some(p=>p.id===value.id))throw new Error('Choose a supported CLI.');
   const executable=value.executable??'',model=value.model??'';
   if(typeof executable!=='string'||executable.length>1024||/[\x00-\x1f]/.test(executable)||executable&&(!path.isAbsolute(executable)||!/\.(exe|[cm]?js)$/i.test(executable)&&process.platform==='win32'))throw new Error('Executable must be an absolute path to a native executable or JavaScript CLI entry point, not a shell command.');
-  if(typeof model!=='string'||model.length>160||model.startsWith('-')||/[\x00-\x20]/.test(model))throw new Error('Use a model ID without whitespace or command flags, or leave it blank.');
+  if(typeof model!=='string'||model.length>160||model.startsWith('-')||(value.id==='antigravity'?/[\x00-\x1f\x7f]/:/[\x00-\x20]/).test(model))throw new Error('Use a model ID without whitespace or command flags, or leave it blank.');
   if(value.id==='amp'&&model)throw new Error('Configure Amp’s model in Amp itself; leave this field blank.');
   return {id:value.id,executable,model};
 }

@@ -43,3 +43,7 @@ Prompts are passed through stdin where supported. Other adapters use separate pr
 ## Validation
 
 `node tools/test-cli-providers.mjs` exercises all thirteen external adapters with real fixture subprocesses, output decoding, failure/cancellation, model arguments, settings persistence and the native Codex thread interface. `CLI-UI-TESTS.json` records isolated real-server/browser tests. No paid AI requests or external-provider sign-ins were performed. Codex and OpenCode version probes succeeded on the development machine; a locally present Claude executable could not start. The other provider binaries/accounts were not available for live testing. These results do not claim all accounts or provider versions have been end-to-end tested.
+
+## Model dropdown
+
+The Model of CLI field is a dropdown. Codex and OpenCode can load models reported by the installed CLI. Claude Code offers its Sonnet, Opus and Haiku aliases; Gemini, Qwen and Antigravity include documented suggestions. Saved model IDs are retained for every CLI. Suggestions do not establish account entitlement. Keep CLI default or choose Custom model for gateway, local or unlisted models. Amp continues to manage its model inside Amp.

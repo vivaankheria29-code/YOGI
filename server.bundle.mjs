@@ -1,4 +1,4 @@
-// file-workspace.mjs
+// outputs/YOGI-Portable/YOGI/file-workspace.mjs
 import { realpath as realpath2, stat as stat2, readFile as readFile2, mkdir as mkdir2, writeFile as writeFile2, rename as rename2, unlink as unlink2, copyFile } from "node:fs/promises";
 import { createReadStream } from "node:fs";
 import { createHash, randomUUID as randomUUID2 } from "node:crypto";
@@ -6,7 +6,7 @@ import { inflateRawSync } from "node:zlib";
 import { spawn } from "node:child_process";
 import path2 from "node:path";
 
-// uploads.mjs
+// outputs/YOGI-Portable/YOGI/uploads.mjs
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile, rename, open, unlink, realpath, stat, rmdir } from "node:fs/promises";
 import path from "node:path";
@@ -164,7 +164,7 @@ async function createUploads(workspace2, dataDir2, { maxStoredBytes = 2 * 1024 *
   };
 }
 
-// file-workspace.mjs
+// outputs/YOGI-Portable/YOGI/file-workspace.mjs
 var problem = (status, message) => Object.assign(new Error(message), { status });
 var MAX_EDIT = 2 * 1024 * 1024;
 var MAX_HEX = 256 * 1024;
@@ -412,7 +412,7 @@ function createFileWorkspace({ filesRoot: filesRoot2, uploads: uploads2, isBusy 
   } };
 }
 
-// access-policy.mjs
+// outputs/YOGI-Portable/YOGI/access-policy.mjs
 import { randomUUID as randomUUID3 } from "node:crypto";
 import { readFileSync, writeFileSync, renameSync, mkdirSync, lstatSync } from "node:fs";
 import path3 from "node:path";
@@ -454,7 +454,7 @@ function saveAccessMode(root2, mode) {
   return accessStatus(root2);
 }
 
-// static-assets.mjs
+// outputs/YOGI-Portable/YOGI/static-assets.mjs
 import { stat as stat3, readFile as readFile3 } from "node:fs/promises";
 import { gzip } from "node:zlib";
 import { promisify } from "node:util";
@@ -511,7 +511,7 @@ function createStaticAssets(root2) {
   };
 }
 
-// spotify.mjs
+// outputs/YOGI-Portable/YOGI/spotify.mjs
 import { randomBytes, createHash as createHash2 } from "node:crypto";
 var scopes = "playlist-read-private playlist-read-collaborative user-read-playback-state user-modify-playback-state";
 var error = (status, message) => Object.assign(new Error(message), { status });
@@ -621,7 +621,7 @@ function createSpotify({ port: port2, fetcher = fetch, now = Date.now }) {
   };
 }
 
-// skill-library.mjs
+// outputs/YOGI-Portable/YOGI/skill-library.mjs
 import { readFileSync as readFileSync2, writeFileSync as writeFileSync2, existsSync, mkdirSync as mkdirSync2, lstatSync as lstatSync2, renameSync as renameSync2, rmSync, realpathSync, statSync } from "node:fs";
 import { createHash as createHash3, randomUUID as randomUUID4 } from "node:crypto";
 import { gunzipSync } from "node:zlib";
@@ -814,12 +814,12 @@ function useDevelopmentSkill(root2, args = {}) {
   return { name: skill.name, source: skill.sourceUrl, file, text: bytes.toString("utf8"), files: skill.files.map((f) => f.path) };
 }
 
-// server.mjs
+// outputs/YOGI-Portable/YOGI/server.mjs
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import http from "node:http";
 
-// request-validation.mjs
+// outputs/YOGI-Portable/YOGI/request-validation.mjs
 var invalid2 = (message) => Object.assign(new Error(message), { status: 400 });
 function validateChatPayload(data) {
   if (!data || typeof data !== "object" || Array.isArray(data)) throw invalid2("Expected a message object.");
@@ -834,12 +834,12 @@ function validateChatPayload(data) {
   return { ...data, history: (data.history || []).slice(-80).map((x) => ({ role: x.role, text: x.text.slice(0, 8e3) })), tasks: (data.tasks || []).map((t) => ({ text: t.text.slice(0, 1e3), done: !!t.done })) };
 }
 
-// server.mjs
+// outputs/YOGI-Portable/YOGI/server.mjs
 import { readFileSync as readFileSync7, writeFileSync as writeFileSync7, renameSync as renameSync5, mkdirSync as mkdirSync7, realpathSync as realpathSync7, statSync as statSync5, createReadStream as createReadStream2 } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path15 from "node:path";
 
-// tts.mjs
+// outputs/YOGI-Portable/YOGI/tts.mjs
 import { readFileSync as readFileSync3, existsSync as existsSync2 } from "node:fs";
 import { parseEnv } from "node:util";
 import path6 from "node:path";
@@ -888,7 +888,7 @@ async function* streamSpeech(text, config, signal, fetcher = fetch) {
   }
 }
 
-// web-tools.mjs
+// outputs/YOGI-Portable/YOGI/web-tools.mjs
 function imageQuery(message, forced = false) {
   if (!forced && !/\b(images?|photos?|pictures?|photographs?)\b/i.test(message)) return "";
   const subject = message.match(/\b(?:images?|photos?|pictures?|photographs?)\s+(?:of|for)\s+([^.!?\n]+)/i);
@@ -922,14 +922,7 @@ async function searchImages(query, { signal, fetcher = fetch } = {}) {
   return normalizeImages(data);
 }
 
-// shared-projects.mjs
-import { existsSync as existsSync5, lstatSync as lstatSync5, readFileSync as readFileSync6, writeFileSync as writeFileSync6, renameSync as renameSync4, mkdirSync as mkdirSync6, realpathSync as realpathSync6, readdirSync as readdirSync4 } from "node:fs";
-import { execFile as execFile5 } from "node:child_process";
-import { promisify as promisify5 } from "node:util";
-import { randomUUID as randomUUID9, createHash as createHash5 } from "node:crypto";
-import path14 from "node:path";
-
-// cli-providers.mjs
+// outputs/YOGI-Portable/YOGI/cli-providers.mjs
 import { existsSync as existsSync3, lstatSync as lstatSync3, readFileSync as readFileSync4, writeFileSync as writeFileSync3, renameSync as renameSync3, mkdirSync as mkdirSync3, realpathSync as realpathSync3 } from "node:fs";
 import path8 from "node:path";
 import os2 from "node:os";
@@ -937,7 +930,7 @@ import { execFile } from "node:child_process";
 import { promisify as promisify2 } from "node:util";
 import { randomUUID as randomUUID5 } from "node:crypto";
 
-// runtime-locator.mjs
+// outputs/YOGI-Portable/YOGI/runtime-locator.mjs
 import { readdirSync, statSync as statSync2, realpathSync as realpathSync2 } from "node:fs";
 import { spawnSync } from "node:child_process";
 import os from "node:os";
@@ -997,7 +990,7 @@ function resolveCodex(options = {}) {
   throw new Error("Codex was not found. Install the Codex desktop app or CLI, or set YOGI_CODEX_PATH to its executable. See https://developers.openai.com/codex/cli/");
 }
 
-// cli-providers.mjs
+// outputs/YOGI-Portable/YOGI/cli-providers.mjs
 var exec = promisify2(execFile);
 var CLI_PROVIDERS = Object.freeze([
   { id: "codex", name: "Codex", command: "codex", docs: "https://developers.openai.com/codex/cli/", format: "native" },
@@ -1020,7 +1013,7 @@ function validateEngine(value) {
   if (!CLI_PROVIDERS.some((p) => p.id === value.id)) throw new Error("Choose a supported CLI.");
   const executable = value.executable ?? "", model = value.model ?? "";
   if (typeof executable !== "string" || executable.length > 1024 || /[\x00-\x1f]/.test(executable) || executable && (!path8.isAbsolute(executable) || !/\.(exe|[cm]?js)$/i.test(executable) && process.platform === "win32")) throw new Error("Executable must be an absolute path to a native executable or JavaScript CLI entry point, not a shell command.");
-  if (typeof model !== "string" || model.length > 160 || model.startsWith("-") || /[\x00-\x20]/.test(model)) throw new Error("Use a model ID without whitespace or command flags, or leave it blank.");
+  if (typeof model !== "string" || model.length > 160 || model.startsWith("-") || (value.id === "antigravity" ? /[\x00-\x1f\x7f]/ : /[\x00-\x20]/).test(model)) throw new Error("Use a model ID without whitespace or command flags, or leave it blank.");
   if (value.id === "amp" && model) throw new Error("Configure Amp\u2019s model in Amp itself; leave this field blank.");
   return { id: value.id, executable, model };
 }
@@ -1150,11 +1143,54 @@ function invocation(id, { prompt, file, model = "" }) {
   return { args, stdin, format };
 }
 
-// engine-manager.mjs
-import { execFile as execFile4 } from "node:child_process";
-import { promisify as promisify4 } from "node:util";
+// outputs/YOGI-Portable/YOGI/model-catalog.mjs
+import { execFile as execFile2 } from "node:child_process";
+import { promisify as promisify3 } from "node:util";
+var exec2 = promisify3(execFile2);
+var discoveryCache = /* @__PURE__ */ new Map();
+async function openCodeModels(settings) {
+  const key = settings.executable || "PATH", cached = discoveryCache.get(key);
+  if (cached && Date.now() - cached.at < 3e5) return cached.models;
+  const command = await locateCLI(settings);
+  const { stdout } = await exec2(command.command, [...command.args, "models"], { windowsHide: true, timeout: 6e3, maxBuffer: 256e3 });
+  const models = stdout.split(/\r?\n/).map((s) => s.trim()).filter((s) => /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9._/:#-]+$/.test(s)).slice(0, 500).map((id) => ({ id, label: id }));
+  if (discoveryCache.size >= 8) discoveryCache.delete(discoveryCache.keys().next().value);
+  discoveryCache.set(key, { at: Date.now(), models });
+  return models;
+}
+var choices = {
+  codex: [["gpt-6.1-sol", "GPT-6.1-Sol"], ["gpt-6-astra", "GPT-6-Astra"], ["gpt-6.1-terra", "GPT-6.1 Terra"], ["gpt-6-sol", "GPT-6-Sol"], ["gpt-6-luna", "GPT-6-Luna"]],
+  claude: [["sonnet", "Claude Sonnet \xB7 CLI alias"], ["opus", "Claude Opus \xB7 CLI alias"], ["haiku", "Claude Haiku \xB7 CLI alias"]],
+  antigravity: [["Orchestrator (Carbon)", "Orchestrator (Carbon)"], ["Orchestrator (Argon)", "Orchestrator (Argon)"], ["gemini-4-hydrogen-xhigh", "Gemini 4 Hydrogen \xB7 Extra High"]],
+  gemini: [["auto", "Auto \xB7 Gemini CLI"], ["gemini-3-pro-preview", "Gemini 3 Pro Preview"], ["gemini-3-flash-preview", "Gemini 3 Flash Preview"], ["gemini-2.5-pro", "Gemini 2.5 Pro"], ["gemini-2.5-flash", "Gemini 2.5 Flash"]],
+  qwen: [["qwen3-coder-plus", "Qwen3 Coder Plus"], ["qwen3-coder-flash", "Qwen3 Coder Flash"]]
+};
+function modelOptions(providerId, { profiles = [], selected = null, live = null } = {}) {
+  if (!CLI_PROVIDERS.some((p) => p.id === providerId)) throw Object.assign(new Error("Unknown CLI provider."), { status: 400 });
+  const result = /* @__PURE__ */ new Map(), add = (id, label) => {
+    if (typeof id === "string" && id.length && id.length <= 160 && !id.startsWith("-") && !(providerId === "antigravity" ? /[\x00-\x1f\x7f]/ : /[\x00-\x20]/).test(id) && id !== "__custom__") result.set(id, { id, label: String(label || id).slice(0, 200) });
+  };
+  if (providerId !== "amp") {
+    for (const [id, label] of choices[providerId] || []) add(id, label);
+    for (const m of live || []) add(m.model || m.id, m.displayName || m.label || m.model || m.id);
+    for (const p of profiles) if (p.id === providerId && p.model && !result.has(p.model)) add(p.model, p.model + " \xB7 saved connection");
+    if (selected?.id === providerId && selected.model && !result.has(selected.model)) add(selected.model, selected.model + " \xB7 saved model");
+  }
+  return { providerId, models: [...result.values()], source: live?.length ? "cli" : "suggestions", hint: providerId === "amp" ? "Amp selects its model in Amp." : live?.length ? "Includes models reported by your CLI; account access still applies." : "Model suggestions and saved connections. Availability depends on your CLI version, provider configuration and account." };
+}
 
-// automatic-skills.mjs
+// outputs/YOGI-Portable/YOGI/shared-projects.mjs
+import { existsSync as existsSync5, lstatSync as lstatSync5, readFileSync as readFileSync6, writeFileSync as writeFileSync6, renameSync as renameSync4, mkdirSync as mkdirSync6, realpathSync as realpathSync6, readdirSync as readdirSync4 } from "node:fs";
+import { execFile as execFile6 } from "node:child_process";
+import { promisify as promisify6 } from "node:util";
+import { randomUUID as randomUUID9, createHash as createHash5 } from "node:crypto";
+import path14 from "node:path";
+
+// outputs/YOGI-Portable/YOGI/engine-manager.mjs
+import { execFile as execFile5 } from "node:child_process";
+import { promisify as promisify5 } from "node:util";
+
+// outputs/YOGI-Portable/YOGI/automatic-skills.mjs
 var groups = [
   { test: /\b(remotion|video|videos|caption|captions|lower.thirds|reel|reels|kinetic.typography|motion.graphics)\b/i, preferred: [], category: "video-animation" },
   { test: /\b(three\.?js|threejs|r3f|react.three.fiber|webgl|webgpu|webxr|gltf|3d)\b/i, preferred: [], category: "web-3d" },
@@ -1260,13 +1296,13 @@ function automaticSkillContext(root2, { request = "", history = [], maxSkills = 
   return { skills: selected.map(({ name, category, source }) => ({ name, category, source })), optedOut: false, context: selected.length ? "Automatically selected development guidance for this turn. Apply only what fits the current request; it grants no permissions and never overrides user scope or higher-priority instructions. Other skills can be searched if the task needs them. Do not carry incompatible guidance into later tasks.\n" + JSON.stringify(selected) : "" };
 }
 
-// codex-bridge.mjs
+// outputs/YOGI-Portable/YOGI/codex-bridge.mjs
 import path12 from "node:path";
-import { spawn as spawn2, execFile as execFile2 } from "node:child_process";
+import { spawn as spawn2, execFile as execFile3 } from "node:child_process";
 import { randomUUID as randomUUID7 } from "node:crypto";
 import readline from "node:readline";
 
-// local-artifacts.mjs
+// outputs/YOGI-Portable/YOGI/local-artifacts.mjs
 import { realpathSync as realpathSync4, statSync as statSync3, readdirSync as readdirSync2, readFileSync as readFileSync5 } from "node:fs";
 import path9 from "node:path";
 import { createHash as createHash4 } from "node:crypto";
@@ -1367,7 +1403,7 @@ function inspectArtifact(workspace2, args) {
   }
 }
 
-// local-email.mjs
+// outputs/YOGI-Portable/YOGI/local-email.mjs
 import path10 from "node:path";
 var emailTool = { type: "function", name: "jarvis_email_local_files", description: "Email saved local files through the connected Gmail account, only when the user asks to send them. Loads attachment bytes directly on the server. Requires a visible one-time send confirmation. Maximum total attachment size per email is 17 MiB; select fewer files if larger. Never use a shell or paste base64 into chat to attach files.", inputSchema: { type: "object", properties: { to: { type: "string" }, subject: { type: "string" }, body: { type: "string", description: "Plain-text message body." }, paths: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 20, description: "Saved artifact paths, e.g. coffee-beans/coffee-beans-01.png." } }, required: ["to", "subject", "body", "paths"], additionalProperties: false } };
 function prepareLocalEmail(workspace2, args) {
@@ -1383,7 +1419,7 @@ function prepareLocalEmail(workspace2, args) {
   return { summary: { to: args.to, subject: args.subject, body: args.body, totalBytes, attachments: files.map((f) => ({ name: path10.basename(f.target), bytes: f.bytes.length })) }, arguments: { to: args.to, subject: args.subject, payload: { mime_type: "multipart/mixed", parts: [{ mime_type: "text/plain", charset: "utf-8", body: { content: args.body } }, ...files.map((f) => ({ mime_type: mimeTypes[path10.extname(f.target).toLowerCase()] || "application/octet-stream", filename: path10.basename(f.target), content_disposition: "attachment", body: { base64_url_content: f.bytes.toString("base64url") } }))] } } };
 }
 
-// identity.mjs
+// outputs/YOGI-Portable/YOGI/identity.mjs
 var ASSISTANT_NAME = "YOGI";
 var CREATOR_NAME = "Vivaan Kheria";
 var IDENTITY_LINE = `I'm ${ASSISTANT_NAME}, an assistant app created by ${CREATOR_NAME}.`;
@@ -1391,7 +1427,7 @@ var identityInstructions = `Your app name is ${ASSISTANT_NAME}. The app and its 
 var sanitizeIdentity = (text) => typeof text === "string" ? text : "";
 var sanitizeStreaming = sanitizeIdentity;
 
-// generated-images.mjs
+// outputs/YOGI-Portable/YOGI/generated-images.mjs
 import { readdirSync as readdirSync3, statSync as statSync4, mkdirSync as mkdirSync4, writeFileSync as writeFileSync4, copyFileSync, existsSync as existsSync4, realpathSync as realpathSync5 } from "node:fs";
 import { randomUUID as randomUUID6 } from "node:crypto";
 import path11 from "node:path";
@@ -1525,7 +1561,7 @@ function createImageCollector(workspace2) {
   return { snapshot: () => snapshotImages([filesRoot2, path11.join(workspace2, "work")]), fromItem, newSince };
 }
 
-// codex-bridge.mjs
+// outputs/YOGI-Portable/YOGI/codex-bridge.mjs
 function approvalView(message) {
   const p = message.params || {}, method = message.method;
   if (method === "item/commandExecution/requestApproval" || method === "item/fileChange/requestApproval") return { kind: "decision", title: method.includes("commandExecution") ? "Allow this command?" : "Allow these file changes?", message: p.reason || "YOGI needs your approval to continue.", detail: p.command || p.grantRoot || "", choices: ["accept", "decline", "cancel"] };
@@ -1768,7 +1804,7 @@ ${summary.body}`, detail: summary.attachments.map((f) => `${f.name} (${f.bytes.t
   async catalog(force = false) {
     if (!force && this.cachedCatalog && Date.now() - this.cachedCatalog.checkedAt < 3e5) return this.cachedCatalog;
     await this.ready();
-    const [installed, local] = await Promise.all([this.request("app/installed", { forceRefresh: force }), new Promise((resolve) => execFile2(this.exe, [...this.prefix, "plugin", "list", "--json"], { windowsHide: true, timeout: 15e3, maxBuffer: 2 * 1024 * 1024 }, (error2, stdout) => {
+    const [installed, local] = await Promise.all([this.request("app/installed", { forceRefresh: force }), new Promise((resolve) => execFile3(this.exe, [...this.prefix, "plugin", "list", "--json"], { windowsHide: true, timeout: 15e3, maxBuffer: 2 * 1024 * 1024 }, (error2, stdout) => {
       try {
         resolve(JSON.parse(stdout).installed || []);
       } catch {
@@ -1855,14 +1891,14 @@ ${summary.body}`, detail: summary.attachments.map((f) => `${f.name} (${f.bytes.t
   }
 };
 
-// cli-bridge.mjs
-import { spawn as spawn3, execFile as execFile3 } from "node:child_process";
-import { promisify as promisify3 } from "node:util";
+// outputs/YOGI-Portable/YOGI/cli-bridge.mjs
+import { spawn as spawn3, execFile as execFile4 } from "node:child_process";
+import { promisify as promisify4 } from "node:util";
 import { mkdirSync as mkdirSync5, writeFileSync as writeFileSync5, unlinkSync, lstatSync as lstatSync4 } from "node:fs";
 import { StringDecoder } from "node:string_decoder";
 import path13 from "node:path";
 import { randomUUID as randomUUID8 } from "node:crypto";
-var exec2 = promisify3(execFile3);
+var exec3 = promisify4(execFile4);
 var plain2 = (text) => text.replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, "").replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
 var CLIOutput = class {
   constructor(format, onText = () => {
@@ -2003,7 +2039,7 @@ ${text}`;
         const terminate = () => {
           if (!child?.pid || child.exitCode !== null || child.signalCode !== null) return;
           if (process.platform === "win32") {
-            exec2("taskkill.exe", ["/PID", String(child.pid), "/T", "/F"], { windowsHide: true, timeout: 5e3 }).catch(() => child.kill());
+            exec3("taskkill.exe", ["/PID", String(child.pid), "/T", "/F"], { windowsHide: true, timeout: 5e3 }).catch(() => child.kill());
           } else {
             try {
               process.kill(-child.pid, "SIGTERM");
@@ -2100,8 +2136,8 @@ ${text}`;
   }
 };
 
-// engine-manager.mjs
-var exec3 = promisify4(execFile4);
+// outputs/YOGI-Portable/YOGI/engine-manager.mjs
+var exec4 = promisify5(execFile5);
 var EngineManager = class {
   constructor(root2, cwd, { locate = locateCLI, projectCwd = cwd } = {}) {
     this.projectCwd = projectCwd;
@@ -2143,7 +2179,7 @@ var EngineManager = class {
         executable = located.path;
         if (settings.id === "codex") {
           try {
-            await exec3(located.command, [...located.args, "login", "status"], { windowsHide: true, timeout: 7e3, maxBuffer: 64e3 });
+            await exec4(located.command, [...located.args, "login", "status"], { windowsHide: true, timeout: 7e3, maxBuffer: 64e3 });
             connected = true;
             auth = "signed-in";
           } catch {
@@ -2179,7 +2215,7 @@ var EngineManager = class {
   }
   async test() {
     const settings = this.settings, located = await this.locate(settings);
-    await exec3(located.command, [...located.args, "--version"], { windowsHide: true, timeout: 7e3, maxBuffer: 64e3 });
+    await exec4(located.command, [...located.args, "--version"], { windowsHide: true, timeout: 7e3, maxBuffer: 64e3 });
     return { installed: true, name: CLI_PROVIDERS.find((p) => p.id === settings.id).name, authenticationVerified: false };
   }
   async catalog(force = false) {
@@ -2194,6 +2230,7 @@ var EngineManager = class {
     return (await this.ensure()).run(options);
   }
   close() {
+    this.modelCatalog = null;
     this.epoch++;
     this.backend?.close();
     this.backend = null;
@@ -2203,8 +2240,8 @@ var EngineManager = class {
   }
 };
 
-// shared-projects.mjs
-var exec4 = promisify5(execFile5);
+// outputs/YOGI-Portable/YOGI/shared-projects.mjs
+var exec5 = promisify6(execFile6);
 var uuid2 = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 var fail = (message) => Object.assign(new Error(message), { status: 400 });
 var str = (value, max, label) => {
@@ -2399,7 +2436,7 @@ var SharedProjects = class {
     }
     let changes = [];
     try {
-      const r = await exec4("git", ["-C", project.folder, "-c", "core.quotepath=false", "status", "--porcelain", "--untracked-files=normal"], { timeout: 1500, windowsHide: true, maxBuffer: 32e3 });
+      const r = await exec5("git", ["-C", project.folder, "-c", "core.quotepath=false", "status", "--porcelain", "--untracked-files=normal"], { timeout: 1500, windowsHide: true, maxBuffer: 32e3 });
       changes = r.stdout.split(/\r?\n/).filter(Boolean).filter((s) => !/(?:^|[\\/])\.env|\.pem$|\.key$/i.test(s)).slice(0, 40);
     } catch {
     }
@@ -2433,7 +2470,7 @@ var SharedProjects = class {
   }
 };
 
-// server.mjs
+// outputs/YOGI-Portable/YOGI/server.mjs
 import { createHash as createHash6 } from "node:crypto";
 var root = path15.dirname(fileURLToPath(import.meta.url));
 installBundledSkills(root, { log: console.log });
@@ -2634,6 +2671,31 @@ async function handleRequest(req, res) {
     } catch (error2) {
       return json(res, 400, { error: error2.message || "Invalid project settings." });
     }
+  }
+  if (req.method === "GET" && url.pathname === "/api/models") {
+    const providerId = url.searchParams.get("provider") || bridge.settings.id;
+    let live = null;
+    if (providerId === "codex" && bridge.settings.id === "codex" && !busy) {
+      try {
+        const now = Date.now();
+        if (!bridge.modelCatalog || now - bridge.modelCatalog.at > 3e5) {
+          const backend = await bridge.ensure();
+          await backend.ready();
+          const result = await backend.request("model/list", { limit: 100 }, 8e3);
+          bridge.modelCatalog = { at: now, models: Array.isArray(result.data) ? result.data : [] };
+        }
+        live = bridge.modelCatalog.models;
+      } catch {
+      }
+    }
+    if (providerId === "opencode" && !busy) {
+      try {
+        const saved = bridge.settings.id === "opencode" ? bridge.settings : shared.list().profiles.find((p) => p.id === "opencode");
+        live = await openCodeModels({ id: "opencode", model: "", executable: saved?.executable || "" });
+      } catch {
+      }
+    }
+    return json(res, 200, modelOptions(providerId, { profiles: shared.list().profiles, selected: bridge.settings, live }));
   }
   if (req.method === "GET" && url.pathname === "/api/settings/engine") return json(res, 200, await bridge.options());
   if (req.method === "POST" && url.pathname === "/api/settings/engine") {

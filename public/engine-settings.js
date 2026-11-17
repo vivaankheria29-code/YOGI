@@ -1,17 +1,41 @@
 const $=selector=>document.querySelector(selector);
 export function initEngineSettings({onChange=()=>{},isBusy=()=>false}={}){
-  let saved=null,providers=[],loading=false,dirty=false,saving=false;
+  let saved=null,providers=[],loading=false,dirty=false,saving=false,modelRequest=0;
   const drafts=new Map();let current='codex';
   function note(text,error=false){$('#engineFeedback').textContent=text;$('#engineFeedback').dataset.error=String(error);}
-  function value(){return {id:$('#engineProvider').value,model:$('#engineModel').value.trim(),executable:$('#engineExecutable').value.trim()};}
-  function describe(){const p=providers.find(p=>p.id===$('#engineProvider').value);if(!p)return;$('#engineDocs').href=p.docs;$('#engineDocs').textContent=`${p.name} installation & sign-in ↗`;$('#engineModel').disabled=p.id==='amp';
+  function actualModel(){return $('#engineModel').value==='__custom__'?$('#engineCustomModel').value.trim():$('#engineModel').value;}
+  function value(){return {id:$('#engineProvider').value,model:actualModel(),executable:$('#engineExecutable').value.trim()};}
+  function option(id,label){const o=document.createElement('option');o.value=id;o.textContent=label;return o;}
+  function customVisibility(){const custom=$('#engineModel').value==='__custom__';$('#customModelField').hidden=!custom;$('#engineCustomModel').disabled=!custom;}
+  async function loadModels(model=''){
+    const request=++modelRequest,provider=$('#engineProvider').value,select=$('#engineModel');
+    select.replaceChildren(option('','Use CLI default model'));
+    if(model)select.append(option(model,model+' · selected model'));
+    if(provider!=='amp')select.append(option('__custom__','Custom model…'));
+    select.value=model;customVisibility();select.disabled=provider==='amp';
+    $('#modelListHelp').textContent=provider==='amp'?'Configure Amp’s model in Amp itself.':'Loading model choices…';
+    if(provider==='amp')return;
+    try{
+      const response=await fetch('/api/models?provider='+encodeURIComponent(provider));const data=await response.json();
+      if(request!==modelRequest||provider!==$('#engineProvider').value)return;
+      if(!response.ok||!Array.isArray(data.models))throw new Error(data.error||'Could not load model choices.');
+      // Read the current selection after the await so a response never overwrites a choice made while loading.
+      const selected=select.value,custom=$('#engineCustomModel').value;
+      const entries=new Map(data.models.filter(m=>typeof m.id==='string'&&m.id&&m.id!=='__custom__').map(m=>[m.id,m.label||m.id]));
+      if(selected&&selected!=='__custom__'&&!entries.has(selected))entries.set(selected,selected+' · selected model');
+      select.replaceChildren(option('','Use CLI default model'),...Array.from(entries,([id,label])=>option(id,label)),option('__custom__','Custom model…'));
+      select.value=selected;$('#engineCustomModel').value=custom;customVisibility();$('#modelListHelp').textContent=data.hint||'Availability depends on your CLI and account.';
+    }catch{if(request===modelRequest)$('#modelListHelp').textContent='Model list unavailable. Keep the CLI default or choose Custom model. Saved model IDs are preserved.';}
+  }
+  function describe(){const p=providers.find(p=>p.id===$('#engineProvider').value);if(!p)return;$('#engineDocs').href=p.docs;$('#engineDocs').textContent=`${p.name} installation & sign-in ↗`;
     $('#engineCapabilities').textContent=p.id==='codex'?'Codex: native connected apps, image inputs, approval forms and workspace sandbox.':'Headless adapter: your CLI’s own tools and permissions apply. YOGI’s Codex app connections and approval forms are unavailable. Attachments are passed as local paths; image reading depends on the CLI. Requires YOGI Full access. Authentication is verified on your first message.';
   }
-  function render(data){providers=data.providers;saved=data.selected;$('#engineProvider').replaceChildren(...providers.map(p=>{const o=document.createElement('option');o.value=p.id;o.textContent=p.name;return o;}));current=saved.id;$('#engineProvider').value=saved.id;$('#engineModel').value=saved.model;$('#engineExecutable').value=saved.executable;drafts.set(saved.id,saved);dirty=false;describe();note(data.status?.detail||(data.status?.connected?'CLI ready.':'Install and sign in to your CLI, then reconnect.'));}
+  function render(data){providers=data.providers;saved=data.selected;$('#engineProvider').replaceChildren(...providers.map(p=>option(p.id,p.name)));current=saved.id;$('#engineProvider').value=saved.id;$('#engineCustomModel').value='';loadModels(saved.model);$('#engineExecutable').value=saved.executable;drafts.set(saved.id,saved);dirty=false;describe();note(data.status?.detail||(data.status?.connected?'CLI ready.':'Install and sign in to your CLI, then reconnect.'));}
   async function refresh(){if(loading||saving||dirty)return;loading=true;try{const response=await fetch('/api/settings/engine');const data=await response.json();if(!response.ok||!Array.isArray(data.providers))throw new Error(data.error||'Could not load CLI choices.');render(data);}catch(error){note(error.message,true);}finally{loading=false;}}
-  $('#engineProvider').addEventListener('change',()=>{drafts.set(current,{id:current,model:$('#engineModel').value,executable:$('#engineExecutable').value});current=$('#engineProvider').value;const draft=drafts.get(current)||{model:'',executable:''};$('#engineModel').value=draft.model;$('#engineExecutable').value=draft.executable;dirty=true;describe();note('Save to use this CLI for your next message.');});
-  for(const id of ['engineModel','engineExecutable'])$('#'+id).addEventListener('input',()=>{dirty=true;note('Unsaved engine settings.');});
-  $('#engineForm').addEventListener('submit',async event=>{event.preventDefault();if(saving)return;if(isBusy()){note('Stop the current reply before changing CLI.',true);return;}saving=true;$('#saveEngine').disabled=true;$('#testEngine').disabled=true;note('Saving your engine…');try{const response=await fetch('/api/settings/engine',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(value())});const data=await response.json();if(!response.ok)throw new Error(data.error||'Could not save this CLI.');render(data);note(`${providers.find(p=>p.id===saved.id)?.name} selected. ${data.status?.detail||'Applies to your next message.'}`);await onChange();}catch(error){note(error.message,true);}finally{saving=false;$('#saveEngine').disabled=false;$('#testEngine').disabled=false;}});
+  $('#engineProvider').addEventListener('change',()=>{drafts.set(current,{id:current,model:actualModel(),executable:$('#engineExecutable').value});current=$('#engineProvider').value;const draft=drafts.get(current)||{model:'',executable:''};$('#engineCustomModel').value='';loadModels(draft.model);$('#engineExecutable').value=draft.executable;dirty=true;describe();note('Save to use this CLI for your next message.');});
+  $('#engineModel').addEventListener('change',()=>{dirty=true;customVisibility();if($('#engineModel').value==='__custom__')$('#engineCustomModel').focus();note('Unsaved model selection.');});
+  for(const id of ['engineCustomModel','engineExecutable'])$('#'+id).addEventListener('input',()=>{dirty=true;note('Unsaved engine settings.');});
+  $('#engineForm').addEventListener('submit',async event=>{event.preventDefault();if(saving)return;if(isBusy()){note('Stop the current reply before changing CLI.',true);return;}if($('#engineModel').value==='__custom__'&&!actualModel()){note('Enter a custom model ID or choose the CLI default.',true);return;}saving=true;$('#saveEngine').disabled=true;$('#testEngine').disabled=true;note('Saving your engine…');try{const response=await fetch('/api/settings/engine',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(value())});const data=await response.json();if(!response.ok)throw new Error(data.error||'Could not save this CLI.');render(data);note(`${providers.find(p=>p.id===saved.id)?.name} selected. ${data.status?.detail||'Applies to your next message.'}`);await onChange();}catch(error){note(error.message,true);}finally{saving=false;$('#saveEngine').disabled=false;$('#testEngine').disabled=false;}});
   $('#testEngine').addEventListener('click',async()=>{if(saving)return;if(dirty||!saved){note('Save these settings before testing the selected CLI.',true);return;}if(isBusy()){note('Finish the reply before testing the CLI.',true);return;}$('#testEngine').disabled=true;note('Checking the CLI installation…');try{const response=await fetch('/api/engine/test',{method:'POST'});const data=await response.json();if(!response.ok)throw new Error(data.error||'Installation test failed.');note(`${data.name} starts successfully. This test does not verify sign-in, subscription or model access.`);}catch(error){note(error.message,true);}finally{$('#testEngine').disabled=false;}});
-  refresh();return {refresh,value,load:p=>{if(!providers.length)return;$('#engineProvider').value=p.id;current=p.id;$('#engineModel').value=p.model||'';$('#engineExecutable').value=p.executable||'';dirty=true;describe();note('Connection fields loaded. Save the chat connection below, or save as the app default.');}};
+  refresh();return {refresh,value,load:p=>{if(!providers.length)return;$('#engineProvider').value=p.id;current=p.id;$('#engineCustomModel').value='';loadModels(p.model||'');$('#engineExecutable').value=p.executable||'';dirty=true;describe();note('Connection fields loaded. Save the chat connection below, or save as the app default.');}};
 }
