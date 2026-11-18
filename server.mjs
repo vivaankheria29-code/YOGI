@@ -13,9 +13,12 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import {readVoiceConfig,voiceStatus,streamSpeech} from './tts.mjs';
 import {imageQuery,searchImages} from './web-tools.mjs';
-import {modelOptions,openCodeModels} from './model-catalog.mjs';
+import {createModelDiscovery} from './model-catalog.mjs';
+import {validateEngine} from './cli-providers.mjs';
 import {SharedProjects} from './shared-projects.mjs';
 import {EngineManager} from './engine-manager.mjs';
+import {createWifiHost} from './wifi-host.mjs';
+import {createGuestRunner} from './guest-engine.mjs';
 import {IMAGE_EXT} from './generated-images.mjs';
 import {createUploads,MAX_FILE_BYTES,MAX_FILES,MAX_TOTAL_BYTES} from './uploads.mjs';
 
@@ -38,6 +41,8 @@ const uploads=await createUploads(filesRoot,dataDir);
 const fileWorkspace=createFileWorkspace({filesRoot,uploads,isBusy:()=>busy});
 const bridge=new EngineManager(root,workspace);
 const shared=new SharedProjects(root,workspace);
+const discoverModels=createModelDiscovery();
+const wifiHost=createWifiHost({serve:serveStatic,isBusy:()=>busy,run:createGuestRunner({root,settings:()=>bridge.settings,acquire:()=>{if(busy)return false;busy=true;return true;},release:()=>{busy=false;}})});
 async function checkConnection(force=false){return (await bridge.status(force)).connected;}
 const json = (res, status, data) => {res.writeHead(status, {'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
 async function handleRequest(req,res) {
@@ -47,6 +52,14 @@ async function handleRequest(req,res) {
   const url = new URL(req.url,'http://localhost');
   const openingPage=req.method==='GET'&&url.pathname==='/'&&req.headers['sec-fetch-mode']==='navigate'&&req.headers['sec-fetch-dest']==='document';
   if(req.headers['sec-fetch-site']==='cross-site'&&!openingPage&&!(req.method==='GET'&&url.pathname==='/spotify/callback'))return json(res,403,{error:'Local same-origin requests only.'});
+  if(req.method==='GET'&&url.pathname==='/api/settings/wifi')return json(res,200,wifiHost.status());
+  if(url.pathname==='/api/settings/wifi'&&req.method==='POST'){
+    if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Expected JSON.'});
+    let body='';for await(const chunk of req){body+=chunk;if(body.length>1024)return json(res,413,{error:'Request too large.'});}
+    let data;try{data=JSON.parse(body);}catch{return json(res,400,{error:'Invalid Wi-Fi settings.'});}
+    if(typeof data?.enabled!=='boolean')return json(res,400,{error:'Choose whether Wi-Fi hosting is enabled.'});
+    try{return json(res,200,data.enabled?await wifiHost.start():await wifiHost.stop());}catch(error){return json(res,400,{error:error.status?error.message:'Could not start the Wi-Fi server. Check your network and try again.'});}
+  }
   if(req.method==='GET'&&url.pathname==='/spotify/callback'){
     try{await spotify.callback(url);res.writeHead(303,{'Location':`http://localhost:${port}/#music`,'Cache-Control':'no-store','Referrer-Policy':'no-referrer'});res.end();}
     catch(error){res.writeHead(error.status||400,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer'});res.end('<!doctype html><title>Spotify connection</title><p>Spotify could not connect. The request may have expired, been declined, or used an incorrect app configuration.</p><a href="http://localhost:'+port+'/#music">Return to YOGI and try again</a>');}return;
@@ -127,12 +140,11 @@ async function handleRequest(req,res) {
   }
   if(req.method==='GET'&&url.pathname==='/api/models'){
     const providerId=url.searchParams.get('provider')||bridge.settings.id;
-    let live=null;
-    if(providerId==='codex'&&bridge.settings.id==='codex'&&!busy){try{const now=Date.now();if(!bridge.modelCatalog||now-bridge.modelCatalog.at>300000){const backend=await bridge.ensure();await backend.ready();const result=await backend.request('model/list',{limit:100},8000);bridge.modelCatalog={at:now,models:Array.isArray(result.data)?result.data:[]};}live=bridge.modelCatalog.models;}catch{}}
-    if(providerId==='opencode'&&!busy){try{const saved=bridge.settings.id==='opencode'?bridge.settings:shared.list().profiles.find(p=>p.id==='opencode');live=await openCodeModels({id:'opencode',model:'',executable:saved?.executable||''});}catch{}}
-    return json(res,200,modelOptions(providerId,{profiles:shared.list().profiles,selected:bridge.settings,live}));
+    const profiles=shared.list().profiles,saved=bridge.settings.id===providerId?bridge.settings:profiles.find(p=>p.id===providerId);
+    let settings;try{settings=validateEngine({id:providerId,executable:url.searchParams.has('executable')?url.searchParams.get('executable'):saved?.executable||'',model:''});}catch{return json(res,400,{error:'Invalid CLI or executable path.'});}
+    return json(res,200,await discoverModels(settings,{cwd:bridge.projectCwd,force:url.searchParams.get('refresh')==='1',profiles,selected:bridge.settings}));
   }
-  if(req.method==='GET'&&url.pathname==='/api/settings/engine')return json(res,200,await bridge.options());
+  if(req.method==='GET'&&url.pathname==='/api/settings/engine')return json(res,200,await bridge.options({profiles:shared.list().profiles}));
   if(req.method==='POST'&&url.pathname==='/api/settings/engine'){
     if(busy)return json(res,409,{error:'Stop the current reply before switching CLI.'});
     if(!req.headers['content-type']?.startsWith('application/json'))return json(res,415,{error:'Expected JSON.'});
@@ -225,7 +237,7 @@ async function handleRequest(req,res) {
     return;
   }
   if(req.method!=='GET')return json(res,405,{error:'Method not allowed'});
-  const files={'/collaboration.js':'collaboration.js','/collaboration.css':'collaboration.css','/engine-settings.js':'engine-settings.js','/engine-settings.css':'engine-settings.css','/file-workspace.js':'file-workspace.js','/file-workspace.css':'file-workspace.css','/chess-worker.js':'chess-worker.js','/music-vibe.js':'music-vibe.js','/spotify.js':'spotify.js','/spotify.css':'spotify.css','/ui-glass.css':'ui-glass.css','/ui-marigold.css':'ui-marigold.css','/looks.js':'looks.js','/slash.js':'slash.js','/orbface.js':'orbface.js','/chessgame.js':'chessgame.js','/chessboard.js':'chessboard.js','/vendor/chess.js':'vendor/chess.js','/vendor/ScrambleTextPlugin.min.js':'vendor/ScrambleTextPlugin.min.js','/vendor/SplitText.min.js':'vendor/SplitText.min.js','/':'index.html','/app.js':'app.js','/skills.js':'skills.js','/motion.js':'motion.js','/colors.js':'colors.js','/cursor.js':'cursor.js','/storage.js':'storage.js','/wake-word.js':'wake-word.js','/calendar.js':'calendar.js','/face.js':'face.js','/expressions.js':'expressions.js','/workflow.js':'workflow.js','/core-layout.js':'core-layout.js','/waiting.js':'waiting.js','/attachments.js':'attachments.js','/speech.js':'speech.js','/results.js':'results.js','/plugins.js':'plugins.js','/style.css':'style.css','/vendor/gsap.min.js':'vendor/gsap.min.js','/dotface.js':'dotface.js','/fonts/doto-700.woff2':'fonts/doto-700.woff2','/fonts/doto-900.woff2':'fonts/doto-900.woff2','/fonts/grotesk-400.woff2':'fonts/grotesk-400.woff2','/fonts/grotesk-500.woff2':'fonts/grotesk-500.woff2','/fonts/grotesk-700.woff2':'fonts/grotesk-700.woff2','/fonts/mono-400.woff2':'fonts/mono-400.woff2','/favicon.svg':'favicon.svg'};
+  const files={'/network-face.js':'network-face.js','/wifi-settings.js':'wifi-settings.js','/collaboration.js':'collaboration.js','/collaboration.css':'collaboration.css','/engine-settings.js':'engine-settings.js','/engine-settings.css':'engine-settings.css','/file-workspace.js':'file-workspace.js','/file-workspace.css':'file-workspace.css','/chess-worker.js':'chess-worker.js','/music-vibe.js':'music-vibe.js','/spotify.js':'spotify.js','/spotify.css':'spotify.css','/ui-glass.css':'ui-glass.css','/ui-marigold.css':'ui-marigold.css','/looks.js':'looks.js','/slash.js':'slash.js','/orbface.js':'orbface.js','/chessgame.js':'chessgame.js','/chessboard.js':'chessboard.js','/vendor/chess.js':'vendor/chess.js','/vendor/ScrambleTextPlugin.min.js':'vendor/ScrambleTextPlugin.min.js','/vendor/SplitText.min.js':'vendor/SplitText.min.js','/':'index.html','/app.js':'app.js','/skills.js':'skills.js','/motion.js':'motion.js','/colors.js':'colors.js','/cursor.js':'cursor.js','/storage.js':'storage.js','/wake-word.js':'wake-word.js','/calendar.js':'calendar.js','/face.js':'face.js','/expressions.js':'expressions.js','/workflow.js':'workflow.js','/core-layout.js':'core-layout.js','/waiting.js':'waiting.js','/attachments.js':'attachments.js','/speech.js':'speech.js','/results.js':'results.js','/plugins.js':'plugins.js','/style.css':'style.css','/vendor/gsap.min.js':'vendor/gsap.min.js','/dotface.js':'dotface.js','/fonts/doto-700.woff2':'fonts/doto-700.woff2','/fonts/doto-900.woff2':'fonts/doto-900.woff2','/fonts/grotesk-400.woff2':'fonts/grotesk-400.woff2','/fonts/grotesk-500.woff2':'fonts/grotesk-500.woff2','/fonts/grotesk-700.woff2':'fonts/grotesk-700.woff2','/fonts/mono-400.woff2':'fonts/mono-400.woff2','/favicon.svg':'favicon.svg'};
   const file=files[url.pathname];
   if(!file)return json(res,404,{error:'Not found'});
   const type=file.endsWith('.html')?'text/html; charset=utf-8':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.woff2')?'font/woff2':file.endsWith('.svg')?'image/svg+xml':'text/css; charset=utf-8';
@@ -233,4 +245,4 @@ async function handleRequest(req,res) {
 }
 const server = http.createServer((req,res) => { handleRequest(req,res).catch(error => { if(res.destroyed)return; if(res.headersSent){res.end(JSON.stringify({type:'error',text:'The request could not finish. Please retry.'})+'\n');}else json(res,error.status||500,{error:error.status ? error.message : 'The request could not finish. Please retry.'}); }); });
 server.listen(port,'127.0.0.1',()=>console.log(`YOGI: http://localhost:${port} | engine ${bridge.settings.id}`));
-process.on('SIGINT',()=>{shared.close();bridge.close();server.close(()=>process.exit());});
+process.on('SIGINT',async()=>{await wifiHost.stop();shared.close();bridge.close();server.close(()=>process.exit());});

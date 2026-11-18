@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-18",
+  "tests": 8,
+  "checks": [
+    "Private interface discovery and opt-in hosting",
+    "Access code, session isolation, host/origin checks, admin and file routes unavailable to guests",
+    "Guest request queue waits for host and runs serially",
+    "Disconnect/stop cancellation, restart and new access code",
+    "Real CLI fixture subprocess uses selected custom model and guest context",
+    "Login rate limiting and missing network handling",
+    "Native Codex guest turns exclude owner apps and local dynamic tools",
+    "Named-device roster, presence timeout and removal without conversation or credentials",
+    "Merged Codex guest sandbox is read-only and receives no owner tool instructions"
+  ],
+  "scope": "Local HTTP servers and fixture CLI; no paid inference.",
+  "portableIntegration": "Passed: rebuilt portable app receives guest question, invokes selected fixture CLI with custom API model, streams answer back, and stops sharing"
+}

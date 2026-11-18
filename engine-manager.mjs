@@ -4,7 +4,7 @@ import {promisify} from 'node:util';
 import {CodexBridge} from './codex-bridge.mjs';
 import {CLIBridge} from './cli-bridge.mjs';
 import {createImageCollector} from './generated-images.mjs';
-import {CLI_PROVIDERS,readEngine,saveEngine,validateEngine,locateCLI,capabilities} from './cli-providers.mjs';
+import {CLI_PROVIDERS,readEngine,saveEngine,validateEngine,locateCLI,capabilities,discoverCLIs} from './cli-providers.mjs';
 const exec=promisify(execFile);
 export class EngineManager {
   constructor(root,cwd,{locate=locateCLI,projectCwd=cwd}={}){this.projectCwd=projectCwd;this.root=root;this.cwd=cwd;this.locate=locate;this.backend=null;this.threads=new Map();this.cached=null;this.pending=null;this.epoch=0;try{this.settings=readEngine(root);}catch{this.settings={id:'codex',executable:'',model:''};}}
@@ -17,7 +17,7 @@ export class EngineManager {
       const value={...settings,name:preset.name,found,connected,auth,detail,path:executable,capabilities:capabilities(settings.id),docs:preset.docs};if(epoch===this.epoch)this.cached={at:Date.now(),value};return value;
     })().finally(()=>{if(epoch===this.epoch)this.pending=null;});return this.pending;
   }
-  async options(){return {selected:this.settings,providers:CLI_PROVIDERS.map(({format,...p})=>({...p,capabilities:capabilities(p.id)})),status:await this.status()};}
+  async options({profiles=[]}={}){const [providers,status]=await Promise.all([discoverCLIs({selected:this.settings,profiles,locate:this.locate}),this.status()]);return {selected:this.settings,providers,status};}
   configure(value){const settings=validateEngine(value);saveEngine(this.root,settings);this.close();this.settings=settings;this.cached=null;this.pending=null;return settings;}
   async test(){const settings=this.settings,located=await this.locate(settings);await exec(located.command,[...located.args,'--version'],{windowsHide:true,timeout:7000,maxBuffer:64000});return {installed:true,name:CLI_PROVIDERS.find(p=>p.id===settings.id).name,authenticationVerified:false};}
   async catalog(force=false){if(this.settings.id!=='codex')return {apps:[],localPlugins:[],unsupported:true,message:'This panel is available with Codex. Other CLIs use their own integrations.'};return (await this.ensure()).catalog(force);}

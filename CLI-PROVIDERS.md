@@ -1,6 +1,6 @@
 # Choose YOGI’s CLI engine
 
-Open **Settings → Your AI engine**, choose a CLI, optionally enter a model ID, and press **Save engine**. Install and sign in to that CLI on the same computer first, using its official guide below. YOGI does not install CLIs, transfer subscriptions, read API keys, or copy authentication between providers.
+Open **Settings → Your AI engine**, choose a CLI, optionally enter a model ID, and press **Save engine**. Install and sign in to that CLI on the same computer first, using its official guide below. YOGI does not install CLIs, transfer subscriptions, or copy authentication between providers. Discovery reads only model fields from CLI configuration and returns no credentials.
 
 **Test installation** runs only `--version`. A successful test proves the executable starts; it does not prove account, subscription, model or tool access. Other CLIs are labelled “CLI found” until they handle your request. There is no silent fallback to another CLI.
 
@@ -44,6 +44,14 @@ Prompts are passed through stdin where supported. Other adapters use separate pr
 
 `node tools/test-cli-providers.mjs` exercises all thirteen external adapters with real fixture subprocesses, output decoding, failure/cancellation, model arguments, settings persistence and the native Codex thread interface. `CLI-UI-TESTS.json` records isolated real-server/browser tests. No paid AI requests or external-provider sign-ins were performed. Codex and OpenCode version probes succeeded on the development machine; a locally present Claude executable could not start. The other provider binaries/accounts were not available for live testing. These results do not claim all accounts or provider versions have been end-to-end tested.
 
-## Model dropdown
+## CLI and model discovery
 
-The Model of CLI field is a dropdown. Codex and OpenCode can load models reported by the installed CLI. Claude Code offers its Sonnet, Opus and Haiku aliases; Gemini, Qwen and Antigravity include documented suggestions. Saved model IDs are retained for every CLI. Suggestions do not establish account entitlement. Keep CLI default or choose Custom model for gateway, local or unlisted models. Amp continues to manage its model inside Amp.
+The CLI selector scans PATH and common installation folders and groups supported adapters into installed and not detected. An explicit executable path is also checked. Refresh installed CLIs & models rescans installations and bypasses the model cache without saving your draft.
+
+There is no built-in model list. Codex uses its app-server model/list (including pagination); Claude Code uses its initialization model catalog without sending a user prompt; OpenCode uses models; Aider uses --list-models. Catalogs run in the same project directory as the app-default engine, and Codex can be discovered while another engine is selected. Catalog results are cached for one minute by provider, executable and project.
+
+Local configuration supplies custom API, gateway and local model IDs for Codex, Claude Code, Gemini, Qwen Code, Continue, Factory Droid, Aider, Goose and Kimi. Only known model fields are extracted from bounded JSON/JSONC, YAML and TOML files and model-specific environment variables. No API keys are returned to the browser. Sources are marked CLI, configured or saved; configured and CLI-known entries do not prove account entitlement.
+
+Some CLIs or versions do not expose a model catalog. In that case YOGI says the list is unavailable or partial and keeps CLI default, Custom model and saved IDs. Amp manages its model internally. Installed CLI detection covers the supported adapters above, rather than attempting to execute arbitrary programs found on PATH.
+
+Run npm run test:discovery for discovery/configuration/subprocess tests. Browser tests use Playwright from local dependencies, or set YOGI_TEST_RUNTIME to a node_modules directory containing Playwright. Run npm run build after changing server source so the supplied launchers use the updated bundle.

@@ -192,3 +192,9 @@ The library now has 750 skills: the original 500 plus eight official GSAP skills
 
 SHARED PROJECTS AND MODELS
 Save chat connections in Settings, choose a project and model beside the chat box, and switch CLIs without leaving the conversation. Project briefs and recent handoffs carry work between models. Auto uses your own quick/planning/coding/review assignments. See SHARED-PROJECTS.md for setup and limits.
+
+SHARE ON WI-FI
+Open Settings > Host on Wi-Fi > Start Wi-Fi hosting. Send your friend the
+shown link and access code. Keep both devices on the same network and your
+computer awake. Answers run through this computer's selected CLI/account.
+Stop hosting ends access. See WIFI-HOSTING.md for details.

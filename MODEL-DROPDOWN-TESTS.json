@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-17",
+  "date": "2026-11-18",
   "checks": [
     "Provider choices, saved/custom IDs and Antigravity model names with spaces are supported",
     "Native dropdown includes CLI-reported models and preserves an existing unlisted model",
@@ -7,6 +7,7 @@
     "CLI-specific options and custom model drafts survive provider switching",
     "Late model responses cannot overwrite another provider’s dropdown",
     "Unavailable catalogs keep default/custom choices; Amp retains CLI-managed model selection",
+    "Draft executable paths reach discovery and manual refresh preserves custom API model drafts",
     "Model form fits mobile width without browser errors"
   ],
   "scope": "Catalog and real browser form tests with fixture API; no model inference calls."

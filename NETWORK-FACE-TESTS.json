@@ -1,0 +1,7 @@
+{
+  "date": "2026-11-18",
+  "backendTests": 8,
+  "browserFlow": "Two independent guest browser contexts passed join, question/answer flow, separate histories, named host faces, thinking/answering animation state changes, mobile layout, leave and stop cleanup",
+  "rendering": "Visible pixels verified on the guest canvas; original host face retained; desktop and 375px host layouts checked",
+  "scope": "Fixture answers over private IPv4 and real fixture CLI subprocess. No paid model inference or physical second-device test."
+}

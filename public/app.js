@@ -1,3 +1,4 @@
+import {initWifiSettings} from './wifi-settings.js';
 import {initCollaboration} from './collaboration.js';
 import {initEngineSettings} from './engine-settings.js';
 import {initFileWorkspace} from './file-workspace.js';
@@ -1030,3 +1031,5 @@ if (gsap && !reduced()) {
   gsap.from('.dock', {y: 24, opacity: 0, duration: .7, ease: 'expo.out', delay: .15, clearProps: 'transform,opacity'});
   if (window.SplitText) { try { const split = new SplitText('#coreGreeting', {type: 'words'}); gsap.from(split.words, {y: 14, opacity: 0, filter: 'blur(6px)', duration: .7, ease: 'power3.out', stagger: .05, delay: .3, onComplete: () => split.revert()}); } catch {} }
 }
+
+initWifiSettings();

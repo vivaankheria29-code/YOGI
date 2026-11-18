@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-18",
+  "checks": [
+    "Host settings start/stop and display access details",
+    "Incorrect code rejected; valid code joins with HttpOnly session cookie",
+    "Browser question reaches host and streamed answer returns",
+    "Separate browser guest sessions keep histories separate",
+    "Follow-ups preserve guest-only history; New chat clears it",
+    "Guest page fits 375px width without page errors",
+    "Second device opens YOGI with its animated dot-matrix face",
+    "Host retains original face and adds one named face per connected device",
+    "Host and guest faces show thinking/answering activity",
+    "Device departure and stop dispose extra faces without removing original"
+  ],
+  "transport": "Connected through the computer’s private IPv4 network address",
+  "scope": "Two isolated browser contexts and fixture answers; no paid inference and no physical second device."
+}

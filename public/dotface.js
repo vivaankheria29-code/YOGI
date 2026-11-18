@@ -29,7 +29,8 @@ export class DotFace {
       this.cells.push({x, y, d, angle, ring: d > R - 1.3});
     }
     this.resize();
-    new ResizeObserver(() => this.resize()).observe(canvas);
+    this.resizeObserver = new ResizeObserver(() => this.resize());
+    this.resizeObserver.observe(canvas);
   }
 
   resize() {
@@ -37,6 +38,7 @@ export class DotFace {
     const size = Math.max(1, Math.round(Math.min(box.width, box.height) * dpr));
     if (this.canvas.width !== size || this.canvas.height !== size) { this.canvas.width = size; this.canvas.height = size; }
   }
+  destroy() { this.resizeObserver.disconnect(); }
 
   colors() {
     const now = performance.now();

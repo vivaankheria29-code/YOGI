@@ -50,3 +50,7 @@ The verifier checks shipped hashes, the skill-pack manifest and JavaScript synta
 ## Attribution
 
 Bundled third-party code retains its notices in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt). Skill sources, pinned revisions, licenses and file hashes are recorded in [skill-catalog.json](skill-catalog.json), with individual notices in the skill pack. No blanket license for YOGI's own application code is granted by those third-party notices.
+
+## Wi-Fi hosting
+
+Open Settings → Host on Wi-Fi to share a local link and access code with friends on the same network. Their questions run through the selected CLI on your computer, and answers stream back to their browsers. See [WIFI-HOSTING.md](WIFI-HOSTING.md).

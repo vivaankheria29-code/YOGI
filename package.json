@@ -8,12 +8,23 @@
     "test:cli": "node tools/test-cli-providers.mjs",
     "verify": "node tools/verify-package.mjs",
     "test:projects": "node tools/test-shared-projects.mjs",
-    "test:models": "node tools/test-model-dropdown.mjs"
+    "test:models": "node tools/test-model-dropdown.mjs",
+    "build": "node tools/build-server.mjs",
+    "test:discovery": "node --test tools/test-model-discovery.mjs",
+    "test:wifi": "node --test tools/test-wifi-host.mjs",
+    "test:wifi:browser": "node tools/test-wifi-browser.mjs",
+    "test:network-faces": "node tools/test-network-face-layout.mjs"
   },
   "dependencies": {
-    "@elevenlabs/elevenlabs-js": "^2.73.0"
+    "@elevenlabs/elevenlabs-js": "^2.73.0",
+    "jsonc-parser": "3.3.1",
+    "smol-toml": "1.9.1",
+    "yaml": "2.9.1"
   },
   "engines": {
     "node": ">=22"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
   }
 }

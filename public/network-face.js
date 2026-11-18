@@ -1,0 +1,10 @@
+import {DotFace} from './dotface.js';
+import {EXPRESSION_BASE} from './expressions.js';
+const faces=new Set();let frame=0,last=0;
+function animate(now){frame=0;if(now-last>60){last=now;for(const face of faces)if(!document.hidden&&face.visible)face.draw(now/1000);}if(faces.size)frame=requestAnimationFrame(animate);}
+export class NetworkFace{
+  constructor(canvas){this.canvas=canvas;this.renderer=new DotFace(canvas);this.phase='offline';this.visible=true;this.offset=Math.random()*20;this.reduced=matchMedia('(prefers-reduced-motion: reduce)');this.observer=new IntersectionObserver(entries=>{this.visible=entries[0].isIntersecting;});this.observer.observe(canvas);faces.add(this);this.setState('offline');if(!frame)frame=requestAnimationFrame(animate);}
+  setState(phase){this.phase=['idle','queued','thinking','answering','error','offline'].includes(phase)?phase:'idle';this.canvas.dataset.phase=this.phase;const labels={idle:'Ready',queued:'Waiting for the host',thinking:'Thinking',answering:'Answering',error:'Needs attention',offline:'Not connected'};this.canvas.setAttribute('aria-label','YOGI · '+labels[this.phase]);this.draw(performance.now()/1000);}
+  draw(time){if(!this.canvas.isConnected||!this.canvas.getBoundingClientRect().width)return;const t=time+this.offset,reduced=this.reduced.matches,p={...EXPRESSION_BASE,blink:1,headY:0,nod:0};if(!reduced){const blink=(t%4.9);p.blink=blink<.15?Math.max(.07,Math.abs(blink-.075)/.075):1;p.lookX=Math.sin(t*.4)*.12;p.headY=Math.sin(t*1.5)*1.5;}let state='idle';if(this.phase==='thinking'){p.browL=10;p.browR=2;p.lookY=-.2;state='thinking';}if(this.phase==='queued'){p.smile=.2;state='awaiting';}if(this.phase==='answering'){p.smile=.65;p.open=reduced?.12:.12+Math.abs(Math.sin(t*9))*.27;p.width=.9;state='writing';}if(this.phase==='error'){p.smile=-.2;p.browL=9;state='error';}if(this.phase==='offline'){p.squint=.6;p.smile=.1;}this.renderer.draw(p,{state,t,reduced,bins:null});}
+  destroy(){faces.delete(this);this.observer.disconnect();this.renderer.destroy();if(!faces.size&&frame){cancelAnimationFrame(frame);frame=0;}}
+}

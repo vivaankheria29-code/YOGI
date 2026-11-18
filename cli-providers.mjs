@@ -62,9 +62,20 @@ export async function locateCLI(settings,{lookup=async name=>{
   if(config.id==='codex')return resolveCodex();
   const preset=CLI_PROVIDERS.find(p=>p.id===config.id),names=process.platform==='win32'?[preset.command+'.exe',preset.command+'.cmd',preset.command]:[preset.command];
   const candidates=(await Promise.all(names.map(lookup))).flat();
-  const suffix=process.platform==='win32'?'.exe':'';candidates.push(path.join(os.homedir(),'.local','bin',preset.command+suffix));
+  const home=os.homedir();
+  const directories=[path.join(home,'.local','bin'),path.join(home,'.opencode','bin'),path.join(home,'.bun','bin'),path.join(home,'.cargo','bin')];
+  if(process.platform==='win32'&&process.env.APPDATA)directories.push(path.join(process.env.APPDATA,'npm'));
+  if(process.platform!=='win32')directories.push('/opt/homebrew/bin','/usr/local/bin');
+  for(const directory of directories)for(const name of names)candidates.push(path.join(directory,name));
   for(const candidate of [...new Set(candidates)]){try{if(fileExists(candidate))return commandForCLI(candidate);}catch{}}
   throw new Error(`${preset.name} was not found. Install and sign in using its official guide, or set its executable path.`);
+}
+export async function discoverCLIs({selected=null,profiles=[],locate=locateCLI}={}){
+  return Promise.all(CLI_PROVIDERS.map(async({format,...provider})=>{
+    const settings=selected?.id===provider.id?selected:profiles.find(p=>p.id===provider.id&&p.executable)||{id:provider.id,executable:'',model:''};
+    try{const command=await locate({id:provider.id,executable:settings.executable||'',model:''});return {...provider,installed:true,path:command.path,capabilities:capabilities(provider.id)};}
+    catch{return {...provider,installed:false,path:'',capabilities:capabilities(provider.id)};}
+  }));
 }
 export function capabilities(id){return id==='codex'?{nativeApps:true,nativeImages:true,workspaceSandbox:true,streaming:true}:{nativeApps:false,nativeImages:false,workspaceSandbox:false,streaming:!['aider','goose','copilot','continue','amp','droid','kimi','cline'].includes(id)};}
 export function invocation(id,{prompt,file,model=''}){

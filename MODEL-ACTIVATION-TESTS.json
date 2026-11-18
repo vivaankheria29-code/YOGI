@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-17",
+  "date": "2026-11-18",
   "checks": [
     "Choosing Carbon displays an unapplied draft and leaves the saved default unchanged",
     "Use for this chat creates/selects the Carbon connection independently of app default and Auto",

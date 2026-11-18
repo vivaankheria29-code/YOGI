@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-18",
+  "upload": "YOGI-Updated-Network.zip",
+  "changedFiles": [
+    "cli-bridge.mjs",
+    "CLI-PROVIDERS.md",
+    "cli-providers.mjs",
+    "codex-bridge.mjs",
+    "engine-manager.mjs",
+    "MODEL-ACTIVATION-TESTS.json",
+    "model-catalog.mjs",
+    "MODEL-DROPDOWN-TESTS.json",
+    "package-lock.json",
+    "package.json",
+    "README.md",
+    "server.bundle.mjs",
+    "server.mjs",
+    "SHA256SUMS.txt",
+    "START HERE.txt",
+    "THIRD-PARTY-NOTICES.txt",
+    "public/app.js",
+    "public/dotface.js",
+    "public/engine-settings.css",
+    "public/engine-settings.js",
+    "public/index.html",
+    "tools/test-model-activation.mjs",
+    "tools/test-model-dropdown.mjs"
+  ],
+  "newFiles": [
+    ".gitattributes",
+    ".gitignore",
+    "CLI-DISCOVERY-CHANGES.md",
+    "guest-engine.mjs",
+    "MODEL-DISCOVERY-TESTS.json",
+    "NETWORK-FACE-TESTS.json",
+    "WIFI-BROWSER-TESTS.json",
+    "WIFI-HOST-TESTS.json",
+    "wifi-host.mjs",
+    "WIFI-HOSTING.md",
+    ".21st/design.json",
+    ".21st/DESIGN.md",
+    "public/network-face.js",
+    "public/wifi-guest.css",
+    "public/wifi-guest.html",
+    "public/wifi-guest.js",
+    "public/wifi-settings.js",
+    "tools/build-server.mjs",
+    "tools/test-model-discovery.mjs",
+    "tools/test-network-face-layout.mjs",
+    "tools/test-wifi-browser.mjs",
+    "tools/test-wifi-host.mjs"
+  ],
+  "preserved": "All runtime data, workspace files, settings, projects, connections and browser profiles. No runtime data imported from ZIP.",
+  "adjustments": [
+    "Codex guest turns request read-only sandboxing.",
+    "Guest instructions do not inherit the owner tool/project directions."
+  ],
+  "checks": [
+    "7 model-discovery tests",
+    "8 Wi-Fi host/session tests",
+    "10 CLI verification groups",
+    "8 shared-project groups",
+    "8 browser model-dropdown groups",
+    "5 browser model-activation groups",
+    "Wi-Fi browser test with two isolated guest contexts over private IPv4",
+    "Full host network-face desktop/mobile test"
+  ],
+  "limitations": [
+    "Fixture model responses only; no paid AI calls.",
+    "No physical second-device test.",
+    "Alternative CLI guest permissions remain controlled by that CLI."
+  ]
+}

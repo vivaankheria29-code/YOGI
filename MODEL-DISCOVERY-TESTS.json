@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-18",
+  "discoveryTests": 7,
+  "browserDropdownGroups": 8,
+  "browserActivationGroups": 5,
+  "cliAdapterGroups": 10,
+  "sharedProjectGroups": 8,
+  "portableBundle": "Passed without node_modules; fixture custom API model discovered via HTTP endpoint; invalid provider rejected",
+  "scope": "Fixture model catalogs, local configuration and subprocesses; no model inference or external account entitlement checks."
+}
