@@ -1,14 +1,14 @@
 {
   "date": "2026-11-18",
+  "collection": "Reference image 7e0b8ec1-190e-4962-a853-6e986f4b1d55/image-1.png",
   "checks": [
-    "Character profiles reject unknown assets, wrong categories and arbitrary CSS/art",
-    "Owner settings opens customizer; preview cancellation and saved outfit survive reload",
-    "All 36 original accessories equip/remove correctly in their six categories",
-    "Six-slot guest outfit, nickname and face tint persist independently from owner",
-    "Customizer fits 375, 390, 768, 1024 and 1440px viewports",
-    "Character export/import, shuffle, clear and invalid import handling work",
-    "Guest chat and existing face styles continue working with equipped accessories",
-    "Escape cancels preview; storage failure keeps working character and offers export"
+    "Exact 15 reference accessories and four groups use generated dot artwork",
+    "Old profiles migrate supported pieces into the monochrome collection; unsafe fields rejected",
+    "All artwork equips in live preview, cream LED colour renders, and Close cancels edits",
+    "Owner and guest independently save, wear and reload their reference-style outfits",
+    "Reference layout and category navigation fit phone, tablet and desktop widths without overflow",
+    "Export/import, clear, shuffle, invalid profile errors and Escape cancellation work",
+    "Guest chat, alternative face styles, storage failure recovery and guest CSP remain working"
   ],
-  "scope": "Production owner and guest assets, isolated browser contexts and fixture answers. No user history modified."
+  "scope": "Actual owner/guest assets in isolated browser contexts with fixture host inference. Artwork and layout also visually inspected against the supplied reference."
 }

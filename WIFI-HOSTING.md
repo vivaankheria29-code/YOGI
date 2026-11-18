@@ -46,4 +46,4 @@ Run npm run test:guest-appearance for schema validation and browser checks cover
 
 ## Guest character
 
-Use Character in the guest header to dress YOGI with 36 original accessories. The owner has the same wardrobe. Save separate browser-local outfits; export/import moves them to another address. See CHARACTER-CUSTOMIZATION.md for the full collection and storage scope.
+Use Character in the guest header to dress YOGI with the 15 monochrome dot accessories from the supplied reference. The owner has the same wardrobe. Save separate browser-local outfits; export/import moves them to another address. See CHARACTER-CUSTOMIZATION.md for the full collection and storage scope.
