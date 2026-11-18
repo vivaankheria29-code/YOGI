@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-18",
+  "checks": [
+    "Character profiles reject unknown assets, wrong categories and arbitrary CSS/art",
+    "Owner settings opens customizer; preview cancellation and saved outfit survive reload",
+    "All 36 original accessories equip/remove correctly in their six categories",
+    "Six-slot guest outfit, nickname and face tint persist independently from owner",
+    "Customizer fits 375, 390, 768, 1024 and 1440px viewports",
+    "Character export/import, shuffle, clear and invalid import handling work",
+    "Guest chat and existing face styles continue working with equipped accessories",
+    "Escape cancels preview; storage failure keeps working character and offers export"
+  ],
+  "scope": "Production owner and guest assets, isolated browser contexts and fixture answers. No user history modified."
+}

@@ -1,0 +1,44 @@
+// Original YOGI wardrobe artwork. All geometry uses a shared 400 x 400 rig.
+export const CATEGORIES=[['head','Headwear'],['eyes','Eyewear'],['ears','Ears & antennae'],['detail','Face details'],['neck','Collars & audio'],['effect','Effects']];
+const a=(id,name,category,art)=>({id,name,category,art});
+export const ACCESSORIES=[
+a('cap','Orbit cap','head','<path fill="var(--a)" d="M90 90Q95 10 200 12Q305 10 310 90Z"/><path fill="var(--b)" d="M82 80H315Q360 85 337 106H82Z"/><path d="M205 18V76"/>'),
+a('beanie','Ribbed beanie','head','<path fill="var(--a)" d="M102 76Q104 0 200 0Q296 0 298 76Z"/><rect fill="var(--b)" x="88" y="64" width="224" height="42" rx="14"/><circle fill="var(--b)" cx="200" cy="-4" r="19"/><path d="M140 26V60M180 15V60M220 15V60M260 26V60"/>'),
+a('crown','Little royalty','head','<path fill="var(--a)" d="M104 97L84 21L151 52L200 3L249 52L316 21L296 97Z"/><path stroke="var(--b)" stroke-width="14" d="M110 84H290"/><path fill="var(--b)" d="M200 36L212 55L200 74L188 55Z"/>'),
+a('bucket','Lunar bucket','head','<path fill="var(--a)" d="M119 8H281L301 80H99Z"/><path fill="var(--b)" d="M99 71Q200 91 301 71L331 106Q200 137 69 106Z"/><path d="M137 30H263"/>'),
+a('wizard','Night wizard','head','<path fill="var(--a)" d="M116 91L213 -27L235 14L282 91Z"/><ellipse fill="var(--b)" cx="200" cy="94" rx="129" ry="24"/><path fill="var(--b)" d="M202 28L207 43L223 43L210 53L215 68L202 58L189 68L194 53L181 43L197 43Z"/>'),
+a('helmet','Space explorer','head','<path fill="var(--a)" d="M20 184Q13 1 200 -4Q387 1 380 184H345Q335 33 200 34Q65 33 55 184Z"/><rect fill="var(--b)" x="9" y="145" width="48" height="79" rx="20"/><rect fill="var(--b)" x="343" y="145" width="48" height="79" rx="20"/><path stroke="var(--b)" d="M102 21L116 47M298 21L284 47"/>'),
+a('round','Round readers','eyes','<circle cx="122" cy="156" r="47"/><circle cx="278" cy="156" r="47"/><path d="M169 149Q200 129 231 149M75 143L45 129M325 143L355 129"/>'),
+a('pixel','Pixel player','eyes','<path fill="#15151b" d="M57 123H179V187H151V201H86V187H57ZM221 123H343V187H314V201H249V187H221Z"/><path d="M179 140H221M57 133H32M343 133H368"/><path stroke="var(--b)" d="M80 142H104M110 163H134M244 142H268M274 163H298"/>'),
+a('visor','Future visor','eyes','<path fill="var(--a)" fill-opacity=".25" d="M43 125Q200 100 357 125L335 193Q200 219 65 193Z"/><path stroke="var(--b)" d="M76 144L143 132M94 168L177 151M263 146L318 137"/>'),
+a('stars','Star gazer','eyes','<path d="M122 107L136 138L170 142L144 165L151 199L122 182L93 199L100 165L74 142L108 138ZM278 107L292 138L326 142L300 165L307 199L278 182L249 199L256 165L230 142L264 138ZM170 149H230"/>'),
+a('monocle','The professor','eyes','<circle cx="278" cy="156" r="47"/><path stroke="var(--b)" d="M319 181Q354 223 332 276Q312 306 343 330"/><path d="M245 135L271 120"/>'),
+a('aviator','Cloud pilot','eyes','<path d="M65 122Q119 102 174 127Q181 183 135 200Q78 208 65 122ZM335 122Q281 102 226 127Q219 183 265 200Q322 208 335 122ZM174 134Q200 116 226 134M65 126L37 116M335 126L363 116"/><path stroke="var(--b)" d="M91 136L111 128M250 136L270 128"/>'),
+a('cat','Cosmic cat','ears','<path fill="var(--a)" d="M51 102L51 -10L149 57ZM349 102L349 -10L251 57Z"/><path fill="var(--b)" d="M71 60V23L113 52ZM329 60V23L287 52Z"/>'),
+a('bunny','Moon bunny','ears','<path fill="var(--a)" d="M98 56Q15 -100 83 -105Q132 -109 144 45ZM256 45Q268 -109 317 -105Q385 -100 302 56Z"/><path stroke="var(--b)" stroke-width="16" d="M105 25L78 -64M295 25L322 -64"/>'),
+a('antennae','Signal seeker','ears','<path d="M113 35L87 -35M287 35L313 -35"/><circle fill="var(--a)" cx="79" cy="-51" r="21"/><circle fill="var(--b)" cx="321" cy="-51" r="21"/>'),
+a('robot','Signal fins','ears','<path fill="var(--a)" d="M33 131L-7 80L-2 181L28 216ZM367 131L407 80L402 181L372 216Z"/><path stroke="var(--b)" d="M10 130L26 151M390 130L374 151"/>'),
+a('horns','Tiny trouble','ears','<path fill="var(--a)" d="M71 67Q5 38 38 -32Q34 21 117 34ZM329 67Q395 38 362 -32Q366 21 283 34Z"/><path stroke="var(--b)" d="M59 30L81 47M341 30L319 47"/>'),
+a('elf','Star elf','ears','<path fill="var(--a)" d="M38 162L-20 127L13 228L43 234ZM362 162L420 127L387 228L357 234Z"/><path stroke="var(--b)" d="M25 182L7 163M375 182L393 163"/>'),
+a('blush','Berry cheeks','detail','<ellipse fill="var(--a)" fill-opacity=".7" stroke="none" cx="83" cy="232" rx="33" ry="18"/><ellipse fill="var(--a)" fill-opacity=".7" stroke="none" cx="317" cy="232" rx="33" ry="18"/><path stroke="var(--b)" d="M70 225V235M86 225V235M310 225V235M326 225V235"/>'),
+a('freckles','Stardust freckles','detail','<g fill="var(--a)" stroke="none"><circle cx="75" cy="218" r="5"/><circle cx="94" cy="226" r="5"/><circle cx="110" cy="212" r="5"/><circle cx="325" cy="218" r="5"/><circle cx="306" cy="226" r="5"/><circle cx="290" cy="212" r="5"/></g>'),
+a('whiskers','Moon whiskers','detail','<path d="M20 210L92 224M18 240L91 237M380 210L308 224M382 240L309 237"/><path fill="var(--b)" d="M188 218H212L200 232Z"/>'),
+a('bolt','Lightning mark','detail','<path fill="var(--a)" d="M302 206H329L312 232H332L292 278L302 242H284Z"/>'),
+a('heart','Heart sticker','detail','<path fill="var(--a)" d="M69 237C21 206 47 178 69 201C91 178 117 206 69 237Z"/>'),
+a('bandage','Adventure patch','detail','<g transform="rotate(-24 316 233)"><rect fill="var(--a)" x="274" y="215" width="84" height="35" rx="12"/><rect fill="var(--b)" x="304" y="220" width="24" height="25" rx="3"/><path d="M287 229V235M345 229V235"/></g>'),
+a('scarf','Comet scarf','neck','<path fill="var(--a)" d="M78 329Q200 382 322 329L316 372Q200 414 84 372Z"/><path fill="var(--b)" d="M269 360L322 440L267 455L227 375Z"/><path d="M289 405L264 415"/>'),
+a('bow','Party bow','neck','<path fill="var(--a)" d="M193 365L135 332L132 401L193 379ZM207 365L265 332L268 401L207 379Z"/><rect fill="var(--b)" x="187" y="357" width="26" height="29" rx="8"/>'),
+a('headphones','Beat headphones','neck','<path d="M32 216Q-4 -20 200 -22Q404 -20 368 216"/><rect fill="var(--a)" x="8" y="170" width="48" height="104" rx="22"/><rect fill="var(--a)" x="344" y="170" width="48" height="104" rx="22"/><path stroke="var(--b)" stroke-width="12" d="M29 190V252M371 190V252"/>'),
+a('chain','Lucky charm','neck','<path stroke="var(--a)" stroke-width="13" d="M97 338Q200 435 303 338"/><path fill="var(--b)" d="M200 373L223 402L200 433L177 402Z"/>'),
+a('bandana','Explorer bandana','neck','<path fill="var(--a)" d="M83 330Q200 378 317 330L200 430Z"/><path fill="var(--b)" d="M200 369L213 391L200 412L187 391Z"/>'),
+a('collar','Flight collar','neck','<path fill="var(--a)" d="M74 333L101 317Q200 370 299 317L326 333L291 392H109Z"/><rect fill="var(--b)" x="174" y="354" width="52" height="25" rx="6"/><circle fill="#e7fff1" cx="200" cy="366" r="6" stroke="none"/>'),
+a('orbit','Orbital trail','effect','<ellipse stroke="var(--b)" cx="200" cy="213" rx="224" ry="125" transform="rotate(-25 200 213)"/><circle fill="var(--a)" cx="5" cy="315" r="16"/><circle fill="var(--b)" cx="371" cy="79" r="10"/>'),
+a('sparkles','Pocket stars','effect','<path fill="var(--a)" d="M15 60L25 85L50 95L25 105L15 130L5 105L-20 95L5 85ZM385 251L395 276L420 286L395 296L385 321L375 296L350 286L375 276Z"/><path stroke="var(--b)" d="M360 18V48M345 33H375M34 326V350M22 338H46"/>'),
+a('halo','Soft halo','effect','<ellipse stroke="var(--a)" stroke-width="13" cx="200" cy="-30" rx="95" ry="22"/><ellipse stroke="var(--b)" stroke-width="3" cx="200" cy="-30" rx="79" ry="13"/>'),
+a('flame','Solar flares','effect','<path fill="var(--a)" d="M31 299Q-40 251 -9 177L13 212Q-2 153 27 122Q3 209 56 236ZM369 299Q440 251 409 177L387 212Q402 153 373 122Q397 209 344 236Z"/><path stroke="var(--b)" d="M24 262L12 238M376 262L388 238"/>'),
+a('circuit','Circuit links','effect','<path stroke="var(--b)" d="M-13 149H-34V246H3M413 149H434V246H397M61 375L37 399H8M339 375L363 399H392"/><g fill="var(--a)"><circle cx="-13" cy="149" r="10"/><circle cx="413" cy="149" r="10"/><circle cx="8" cy="399" r="10"/><circle cx="392" cy="399" r="10"/></g>'),
+a('satellites','Mini moons','effect','<circle fill="var(--a)" cx="-5" cy="115" r="26"/><path stroke="var(--b)" d="M-26 107Q0 95 18 114"/><circle fill="var(--b)" cx="396" cy="312" r="21"/><circle fill="var(--a)" cx="349" cy="-7" r="10"/>')
+];
+export const itemById=new Map(ACCESSORIES.map(x=>[x.id,x]));
+export function accessoryMarkup(item){return `<g fill="none" stroke="var(--a)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${item.art}</g>`;}
+export function accessoryThumb(item){return `<svg viewBox="-65 -120 530 610" aria-hidden="true"><circle cx="200" cy="200" r="173" fill="#232631"/><g fill="#f4f5f9"><ellipse cx="133" cy="158" rx="17" ry="30"/><ellipse cx="267" cy="158" rx="17" ry="30"/></g><path d="M162 265Q200 297 238 265" stroke="#f4f5f9" stroke-width="10" fill="none" stroke-linecap="round"/>${accessoryMarkup(item)}</svg>`;}

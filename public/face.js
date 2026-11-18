@@ -286,6 +286,7 @@ export class Face {
         }else view={...view,smile:Math.max(view.smile,.6+level*.3),happyEyes:Math.max(view.happyEyes,pulse*.45)};
       }
     }
+    this.character?.pose(view,this.style());
     if (this.style() === 'orb') { this.orb.draw(view, {state: this.state, t: (performance.now() - this.t0) / 1000, bins: this.state === 'speaking' ? this.lastBins : null, reduced: this.reduced()}); return; }
     if (this.style() === 'dots') {
       this.dots.draw(view, {state: this.state, t: (performance.now() - this.t0) / 1000, bins: this.state === 'speaking' ? this.lastBins : null, reduced: this.reduced()});

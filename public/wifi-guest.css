@@ -7,3 +7,5 @@
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}[data-guest-motion=reduced] *{scroll-behavior:auto!important;animation:none!important;transition:none!important}
 
 [data-guest-photo=false] body::after{display:none}
+
+.guest-stage .guest-character-face{width:min(var(--guest-face-size,220px),100%);aspect-ratio:1;margin:36px 0 30px}.guest-stage .guest-character-face canvas{width:100%;height:100%}[data-guest-layout=compact] .guest-stage .guest-character-face{width:min(var(--guest-face-size),110px)}[data-guest-face=none] .guest-character-face{display:none}.connection-tools{flex-wrap:wrap;justify-content:flex-end}#guestCharacter{background:var(--guest-panel);color:var(--guest-ink)}

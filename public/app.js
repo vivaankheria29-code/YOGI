@@ -1,3 +1,4 @@
+import {initCharacter} from './character.js';
 import {initWifiSettings} from './wifi-settings.js';
 import {initCollaboration} from './collaboration.js';
 import {initEngineSettings} from './engine-settings.js';
@@ -95,6 +96,9 @@ const voice = new VoicePlayer({
 function updateAudioReadiness() { $('#enableAudio').hidden = voice.state !== 'blocked'; }
 $('#enableAudio').onclick = () => voice.unlock().catch(error => toast(error.message));
 const face = new Face({getVoiceLevels: () => voice.levels(), reducedMotion: reduced, style: faceStyleNow});
+const character=initCharacter({scope:'owner',anchor:document.getElementById('faceButton'),label:'Customize character',getStyle:faceStyleNow});face.character=character;
+document.getElementById('ownerCharacter').onclick=()=>document.querySelector('.stage .character-open').click();
+document.addEventListener('yogi-character-change',()=>{face.dots.colorsAt=-Infinity;face.orb.colorsAt=-Infinity;face.render();});
 const motion = initMotion({face});
 
 let captionWords = [], captionProgress = null;

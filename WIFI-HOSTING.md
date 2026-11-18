@@ -43,3 +43,7 @@ Adjust stacked, side or compact layout, spacing, content width, corner roundness
 Export/import an appearance JSON profile or reset everything from Customize. Exports include the optional background photo, but no chats, access codes or account settings. Browser storage is specific to the address and port; export/import carries the look to a new host address, restarted sharing port, browser or device. If browser storage is unavailable, changes apply for the current page and can still be exported. Invalid profiles are rejected; unsupported fields are ignored. Arbitrary CSS, scripts, SVG and external background URLs are not supported.
 
 Run npm run test:guest-appearance for schema validation and browser checks covering two-device isolation, persistence, local photos, import/export, layouts, face styles, chat controls, storage failure and guest Content Security Policy.
+
+## Guest character
+
+Use Character in the guest header to dress YOGI with 36 original accessories. The owner has the same wardrobe. Save separate browser-local outfits; export/import moves them to another address. See CHARACTER-CUSTOMIZATION.md for the full collection and storage scope.

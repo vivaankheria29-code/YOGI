@@ -1,6 +1,7 @@
+import {initCharacter} from './character.js';
 import {initGuestAppearance} from './guest-appearance.js';
 import {NetworkFace} from './network-face.js';
-const $=id=>document.getElementById(id),appearance=initGuestAppearance(),face=new NetworkFace($('guestFace'),{getSettings:()=>appearance.faceSettings()});let request=null,joined=false,checking=false;
+const $=id=>document.getElementById(id),appearance=initGuestAppearance(),character=initCharacter({scope:'guest',anchor:$('guestFace').parentElement,trigger:$('guestCharacter'),getStyle:()=>appearance.get().faceStyle}),face=new NetworkFace($('guestFace'),{getSettings:()=>appearance.faceSettings()});face.character=character;let request=null,joined=false,checking=false;
 const faceLabels={offline:['Hi, I’m YOGI.','Your own YOGI, powered by the host computer.'],idle:['At your service.','Ask a question whenever you’re ready.'],queued:['I’m waiting for my turn.','The host is answering another question.'],thinking:['Let me think.','Your question is running on the host computer.'],answering:['Here’s what I’m finding.','Receiving your answer from the host.'],error:['Let’s try that again.','Check the message below for what happened.']};
 function setFace(state){face.setState(state);const [greeting,caption]=faceLabels[state]||faceLabels.idle;$('faceGreeting').textContent=greeting;$('faceCaption').textContent=caption;}
 const note=text=>{$('status').textContent=text;};

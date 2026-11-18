@@ -43,7 +43,7 @@ export class DotFace {
   colors() {
     const now = performance.now();
     if (now - this.colorsAt > 500) {
-      const css = getComputedStyle(document.documentElement);
+      const css = getComputedStyle(this.canvas);
       this.c = {off: rgb(css.getPropertyValue('--dot-off') || '#1c1c1c'), on: rgb(css.getPropertyValue('--dot-on') || '#ffffff'), red: rgb(css.getPropertyValue('--dot-red') || '#d71921')};
       this.colorsAt = now;
     }

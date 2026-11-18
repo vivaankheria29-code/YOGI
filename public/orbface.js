@@ -2,7 +2,7 @@
 // eyes that track wherever you point, a simple mouth, and a thin activity arc.
 // It reads the same rig as the other faces, so every expression works here too.
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-function css(name, fallback) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback; }
+function css(name, fallback,element=document.documentElement) { return getComputedStyle(element).getPropertyValue(name).trim() || fallback; }
 
 export class OrbFace {
   constructor(canvas) {
@@ -19,7 +19,7 @@ export class OrbFace {
     const now = performance.now();
     if (now - this.colorsAt > 500) {
       const light = document.documentElement.dataset.theme === 'light';
-      this.c = {accent: css('--accent', '#0A84FF'), eye: css('--orb-eye', light ? '#1D1D1F' : '#FFFFFF'), top: light ? '#FFFFFF' : '#3A3D46', bottom: light ? '#D9DCE4' : '#0F1014', rim: light ? 'rgba(0,0,0,.12)' : 'rgba(255,255,255,.22)', cheek: 'rgba(255,120,140,', shadow: light ? 'rgba(40,50,80,.18)' : 'rgba(0,0,0,.55)'};
+      this.c = {accent: css('--accent', '#0A84FF'), eye: css('--orb-eye', light ? '#1D1D1F' : '#FFFFFF',this.canvas), top: light ? '#FFFFFF' : '#3A3D46', bottom: light ? '#D9DCE4' : '#0F1014', rim: light ? 'rgba(0,0,0,.12)' : 'rgba(255,255,255,.22)', cheek: 'rgba(255,120,140,', shadow: light ? 'rgba(40,50,80,.18)' : 'rgba(0,0,0,.55)'};
       this.colorsAt = now;
     }
     return this.c;
