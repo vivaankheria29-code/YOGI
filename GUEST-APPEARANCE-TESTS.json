@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-18",
+  "checks": [
+    "Allowlisted schema clamps values and rejects CSS, scripts, remote images and SVG",
+    "Live customization and persistence are independent between two guest browsers",
+    "Light and dark palettes keep independent colours",
+    "Background photo stays local; profile export contains appearance only",
+    "Export/import/reset/remove photo and invalid profile recovery work",
+    "Chat, bubbles, timestamps, Enter to send and Shift+Enter continue working",
+    "All layouts fit 375px with maximum text/face sizes; dot/orb/hidden faces render",
+    "Customization remains readable with low contrast; storage failures explain export recovery",
+    "Production guest Content Security Policy and browser console have no errors"
+  ],
+  "scope": "Production guest assets under actual guest CSP, two isolated browser contexts, fixture host answers. No real host data or paid inference."
+}

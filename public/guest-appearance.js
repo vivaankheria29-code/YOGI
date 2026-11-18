@@ -1,0 +1,51 @@
+import {EXPRESSIONS} from './expressions.js';
+export const GUEST_APPEARANCE_KEY='yogi.guest.appearance.v1';
+const fields=['accent','background','panel','text','user','assistant','face'];
+const palettes={dark:{accent:'#D71921',background:'#000000',panel:'#111111',text:'#FFFFFF',user:'#242424',assistant:'#0D0D0D',face:'#FFFFFF'},light:{accent:'#C8131C',background:'#F3F3F3',panel:'#FFFFFF',text:'#171717',user:'#E5E5E5',assistant:'#FFFFFF',face:'#202020'}};
+const defaults=()=>({mode:'dark',look:'core',colors:structuredClone(palettes),font:'grotesk',fontSize:15,width:900,radius:18,density:'comfortable',layout:'stacked',bubbles:false,faceStyle:'dots',faceSize:220,pose:'auto',speed:1,reducedMotion:false,captions:true,timestamps:false,enterSend:false,autoScroll:true,photo:'',photoDim:60});
+const hex=v=>typeof v==='string'&&/^#[a-f0-9]{6}$/i.test(v);
+const photo=v=>typeof v==='string'&&v.length<=1500000&&(/^data:image\/(jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(v)||!v);
+export function normalizeGuestAppearance(input){
+  const s=defaults();if(!input||typeof input!=='object'||Array.isArray(input))return s;
+  const enums={mode:['dark','light','system'],look:['core','glass','marigold'],font:['grotesk','system','mono'],density:['compact','comfortable','roomy'],layout:['stacked','side','compact'],faceStyle:['dots','orb','none'],pose:['auto',...Object.keys(EXPRESSIONS)]};
+  for(const [key,values]of Object.entries(enums))if(values.includes(input[key]))s[key]=input[key];
+  for(const [key,min,max]of [['fontSize',13,24],['width',560,1400],['radius',0,32],['faceSize',100,340],['speed',0,2],['photoDim',0,90]])if(typeof input[key]==='number'&&Number.isFinite(input[key]))s[key]=Math.max(min,Math.min(max,input[key]));
+  for(const key of ['bubbles','reducedMotion','captions','timestamps','enterSend','autoScroll'])if(typeof input[key]==='boolean')s[key]=input[key];
+  for(const mode of ['dark','light'])for(const key of fields)if(hex(input.colors?.[mode]?.[key]))s.colors[mode][key]=input.colors[mode][key];
+  if(photo(input.photo))s.photo=input.photo;return s;
+}
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix=(a,b,t)=>'#'+rgb(a).map((n,i)=>Math.round(n*(1-t)+rgb(b)[i]*t).toString(16).padStart(2,'0')).join('');
+function contrast(a,b){const l=h=>rgb(h).map(n=>{n/=255;return n<=.04045?n/12.92:((n+.055)/1.055)**2.4;}).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);return (Math.max(l(a),l(b))+.05)/(Math.min(l(a),l(b))+.05);}
+export function initGuestAppearance(){
+  const $=id=>document.getElementById(id),root=document.documentElement,system=matchMedia('(prefers-color-scheme: light)');let settings=defaults(),saveTimer,revision=0;
+  function note(text){$('appearanceStatus').textContent=text;}
+  try{const raw=localStorage.getItem(GUEST_APPEARANCE_KEY);if(raw){const p=JSON.parse(raw);if(p.app==='yogi-guest-appearance'&&p.version===1)settings=normalizeGuestAppearance(p.settings);}}catch{note('Saved appearance could not be read. Using defaults for this page.');}
+  const mode=()=>settings.mode==='system'?(system.matches?'light':'dark'):settings.mode;
+  function apply(){
+    const c=settings.colors[mode()];root.dataset.theme=mode();root.dataset.guestPhoto=String(!!settings.photo);root.dataset.guestLook=settings.look;root.dataset.guestLayout=settings.layout;root.dataset.guestDensity=settings.density;root.dataset.guestBubbles=String(settings.bubbles);root.dataset.guestCaptions=String(settings.captions);root.dataset.guestTimes=String(settings.timestamps);root.dataset.guestFace=settings.faceStyle;root.dataset.guestMotion=settings.reducedMotion?'reduced':'auto';root.style.colorScheme=mode();
+    const vars={'--guest-bg':c.background,'--guest-panel':c.panel,'--guest-ink':c.text,'--guest-muted':mix(c.text,c.background,.38),'--guest-line':mix(c.text,c.background,.82),'--guest-accent':c.accent,'--guest-on-accent':contrast(c.accent,'#FFFFFF')>=contrast(c.accent,'#000000')?'#FFFFFF':'#000000','--guest-user':c.user,'--guest-assistant':c.assistant,'--guest-font-size':settings.fontSize+'px','--guest-width':settings.width+'px','--guest-radius':settings.radius+'px','--guest-face-size':settings.faceSize+'px','--guest-font':settings.font==='mono'?'ui-monospace,monospace':settings.font==='system'?'system-ui,sans-serif':'Grotesk,system-ui,sans-serif','--dot-on':c.face,'--dot-off':mix(c.background,c.face,.12),'--dot-red':c.accent,'--accent':c.accent,'--orb-eye':c.face,'--orb-top':mix(c.panel,c.text,.18),'--orb-bottom':c.panel,'--guest-photo':settings.photo?`url("${settings.photo}")`:'none','--guest-photo-dim':String(settings.photoDim/100)};
+    for(const [key,value]of Object.entries(vars))root.style.setProperty(key,value);
+    $('guestFace').hidden=settings.faceStyle==='none';document.querySelector('meta[name=theme-color]')?.setAttribute('content',c.background);
+    const ratio=Math.min(contrast(c.text,c.background),contrast(c.text,c.panel),settings.bubbles?contrast(c.text,c.user):21,settings.bubbles?contrast(c.text,c.assistant):21);$('appearanceContrast').textContent=ratio<4.5?'Text contrast is low. Try a lighter text or darker surface colour.':'Text contrast looks readable.';
+    document.dispatchEvent(new CustomEvent('yogi-guest-appearance'));return settings;
+  }
+  function persist(){clearTimeout(saveTimer);try{localStorage.setItem(GUEST_APPEARANCE_KEY,JSON.stringify({app:'yogi-guest-appearance',version:1,settings}));note('Saved on this device for this guest address.');}catch{note('Changes apply to this page, but browser storage could not save them. Export your appearance to keep a copy.');}}
+  function change(){revision++;apply();clearTimeout(saveTimer);saveTimer=setTimeout(persist,180);}
+  const simple=['mode','look','font','fontSize','width','radius','density','layout','faceStyle','faceSize','pose','speed','photoDim'];
+  const booleans=['bubbles','reducedMotion','captions','timestamps','enterSend','autoScroll'];
+  function render(){for(const key of simple)$('appearance-'+key).value=settings[key];for(const key of booleans)$('appearance-'+key).checked=settings[key];for(const key of fields)$('appearance-'+key).value=settings.colors[mode()][key];for(const key of ['fontSize','width','radius','faceSize','speed','photoDim'])$('value-'+key).textContent=settings[key]+({fontSize:' px',width:' px',radius:' px',faceSize:' px',speed:'×',photoDim:'%'}[key]);$('removeGuestPhoto').disabled=!settings.photo;$('appearanceColorMode').textContent='Colours for '+mode()+' mode';}
+  for(const [key,p]of Object.entries(EXPRESSIONS)){const o=document.createElement('option');o.value=key;o.textContent=p.label;$('appearance-pose').append(o);}
+  for(const key of simple)$('appearance-'+key).addEventListener('input',event=>{const v=event.target.value;settings[key]=['fontSize','width','radius','faceSize','speed','photoDim'].includes(key)?Number(v):v;settings=normalizeGuestAppearance(settings);change();render();});
+  for(const key of booleans)$('appearance-'+key).addEventListener('change',event=>{settings[key]=event.target.checked;change();});
+  for(const key of fields)$('appearance-'+key).addEventListener('input',event=>{settings.colors[mode()][key]=event.target.value;change();});
+  $('guestCustomize').onclick=()=>{$('appearanceDialog').showModal();render();};$('closeGuestAppearance').onclick=()=>{$('appearanceDialog').close();persist();};$('appearanceDialog').addEventListener('close',persist);
+  $('resetGuestAppearance').onclick=()=>{settings=defaults();change();render();note('Default appearance restored.');};
+  $('guestPalette').addEventListener('change',event=>{const accent={red:'#D71921',ice:'#378BD8',mint:'#168B65',amber:'#B36A00',violet:'#8851CE'}[event.target.value];if(!accent)return;settings.colors[mode()]={...palettes[mode()],accent};change();render();});
+  $('guestPhoto').onchange=async event=>{const file=event.target.files?.[0];event.target.value='';if(!file)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>8*1024**2)return note('Choose a JPG, PNG or WebP photo under 8 MB.');const started=revision;let url;try{url=URL.createObjectURL(file);const img=new Image();img.src=url;await img.decode();const scale=Math.min(1,1280/Math.max(img.width,img.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.75);if(!photo(data))throw new Error();if(started!==revision)return note('The photo was skipped because another appearance change was made. Choose it again if needed.');settings.photo=data;change();render();}catch{note('This photo could not be used. Try a smaller JPG or PNG.');}finally{if(url)URL.revokeObjectURL(url);}};
+  $('removeGuestPhoto').onclick=()=>{settings.photo='';change();render();};
+  $('exportGuestAppearance').onclick=()=>{const blob=new Blob([JSON.stringify({app:'yogi-guest-appearance',version:1,settings},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='YOGI-guest-appearance.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);note('Appearance exported. It contains appearance settings and your background photo, not conversations or access codes.');};
+  $('importGuestAppearance').onchange=async event=>{const file=event.target.files?.[0];event.target.value='';if(!file)return;if(file.size>2*1024**2)return note('Appearance profiles must be under 2 MB.');const started=revision;try{const p=JSON.parse(await file.text());if(p?.app!=='yogi-guest-appearance'||p.version!==1||!p.settings||typeof p.settings!=='object')throw new Error();if(started!==revision)return note('Import skipped because another appearance change was made.');settings=normalizeGuestAppearance(p.settings);change();render();note('Appearance imported. Only supported appearance fields were applied.');}catch{note('Choose a valid YOGI guest appearance profile.');}};
+  system.addEventListener('change',()=>{if(settings.mode==='system'){apply();render();}});window.addEventListener('pagehide',persist);apply();render();
+  return {get:()=>settings,faceSettings:()=>({style:settings.faceStyle,pose:settings.pose,speed:settings.speed,reducedMotion:settings.reducedMotion})};
+}

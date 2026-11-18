@@ -7,13 +7,14 @@ function css(name, fallback) { return getComputedStyle(document.documentElement)
 export class OrbFace {
   constructor(canvas) {
     this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.colorsAt = -Infinity;
-    this.resize(); new ResizeObserver(() => this.resize()).observe(canvas);
+    this.resize(); this.resizeObserver=new ResizeObserver(() => this.resize());this.resizeObserver.observe(canvas);
   }
   resize() {
     const box = this.canvas.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
     const size = Math.max(1, Math.round(Math.min(box.width, box.height) * dpr));
     if (this.canvas.width !== size || this.canvas.height !== size) { this.canvas.width = size; this.canvas.height = size; }
   }
+  destroy(){this.resizeObserver.disconnect();}
   colors() {
     const now = performance.now();
     if (now - this.colorsAt > 500) {
@@ -29,7 +30,7 @@ export class OrbFace {
     const bob = (p.headY + p.nod) * .12, rot = p.headRot * Math.PI / 180 * .6;
     // Sphere
     g.save(); g.translate(50, 50 + bob); g.rotate(rot);
-    const body = g.createRadialGradient(-14, -20, 4, 0, 0, 52); body.addColorStop(0, c.top); body.addColorStop(1, c.bottom);
+    const body = g.createRadialGradient(-14, -20, 4, 0, 0, 52); body.addColorStop(0, css('--orb-top',c.top)); body.addColorStop(1, css('--orb-bottom',c.bottom));
     g.shadowColor = c.shadow; g.shadowBlur = 8; g.shadowOffsetY = 3;
     g.fillStyle = body; g.beginPath(); g.arc(0, 0, 44, 0, Math.PI * 2); g.fill();
     g.shadowColor = 'transparent';

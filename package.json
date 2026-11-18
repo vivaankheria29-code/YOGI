@@ -13,7 +13,8 @@
     "test:discovery": "node --test tools/test-model-discovery.mjs",
     "test:wifi": "node --test tools/test-wifi-host.mjs",
     "test:wifi:browser": "node tools/test-wifi-browser.mjs",
-    "test:network-faces": "node tools/test-network-face-layout.mjs"
+    "test:network-faces": "node tools/test-network-face-layout.mjs",
+    "test:guest-appearance": "node tools/test-guest-appearance.mjs"
   },
   "dependencies": {
     "@elevenlabs/elevenlabs-js": "^2.73.0",
